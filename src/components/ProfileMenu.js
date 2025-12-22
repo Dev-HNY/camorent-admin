@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { getTheme, BRAND_COLORS } from '../theme/colors';
+import NotificationDebugger from './NotificationDebugger';
 
 const { width } = Dimensions.get('window');
 
@@ -19,6 +20,7 @@ export default function ProfileMenu() {
   const adminPhone = user?.phone_number || '';
   const adminEmail = user?.email || '';
   const [showMenu, setShowMenu] = useState(false);
+  const [showDebugger, setShowDebugger] = useState(false);
   const scaleAnim = useRef(new Animated.Value(0)).current;
 
   const handlePress = () => {
@@ -123,6 +125,33 @@ export default function ProfileMenu() {
 
             <View style={dynamicStyles.divider} />
 
+            {/* Test Notifications */}
+            <TouchableOpacity
+              style={dynamicStyles.menuItem}
+              onPress={() => {
+                handleClose();
+                setShowDebugger(true);
+              }}
+              activeOpacity={0.7}
+            >
+              <View style={styles.menuItemLeft}>
+                <View style={[dynamicStyles.menuIconContainer, { backgroundColor: 'rgba(255, 107, 53, 0.15)' }]}>
+                  <Ionicons
+                    name="notifications-outline"
+                    size={20}
+                    color="#FF6B35"
+                  />
+                </View>
+                <View>
+                  <Text style={dynamicStyles.menuItemText}>Test Notifications</Text>
+                  <Text style={dynamicStyles.menuItemSubtext}>
+                    Debug notification settings
+                  </Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={theme.textTertiary} />
+            </TouchableOpacity>
+
             {/* Theme Toggle */}
             <TouchableOpacity
               style={dynamicStyles.menuItem}
@@ -184,6 +213,15 @@ export default function ProfileMenu() {
             </TouchableOpacity>
           </Animated.View>
         </TouchableOpacity>
+      </Modal>
+
+      {/* Notification Debugger Modal */}
+      <Modal
+        visible={showDebugger}
+        animationType="slide"
+        onRequestClose={() => setShowDebugger(false)}
+      >
+        <NotificationDebugger onClose={() => setShowDebugger(false)} />
       </Modal>
     </>
   );

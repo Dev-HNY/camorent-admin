@@ -218,6 +218,34 @@ class NotificationService {
       return 'undetermined';
     }
   }
+
+  /**
+   * Send a test local notification
+   * @returns {Promise<string|null>} Notification ID or null if failed
+   */
+  async sendTestNotification() {
+    try {
+      const notificationId = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "🔔 Test Notification",
+          body: "This is a test notification from CAMORENT Admin",
+          data: {
+            type: 'test',
+            timestamp: Date.now()
+          },
+          sound: 'default',
+          priority: Notifications.AndroidNotificationPriority.MAX,
+        },
+        trigger: null, // Show immediately
+      });
+
+      console.log('Test notification sent with ID:', notificationId);
+      return notificationId;
+    } catch (error) {
+      console.error('Error sending test notification:', error);
+      return null;
+    }
+  }
 }
 
 // Export singleton instance

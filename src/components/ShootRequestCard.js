@@ -107,14 +107,14 @@ export default function ShootRequestCard({ request, onApprove, onReject }) {
             </TouchableOpacity>
           </View>
         </View>
-        {request.priority && (
+        {/* {request.priority && (
           <View style={[styles.priorityBadge, { backgroundColor: `${getPriorityColor(request.priority)}15` }]}>
             <View style={[styles.priorityDot, { backgroundColor: getPriorityColor(request.priority) }]} />
             <Text style={[styles.priorityText, { color: getPriorityColor(request.priority) }]}>
               {request.priority}
             </Text>
           </View>
-        )}
+        )} */}
       </View>
 
       {/* Info Grid */}
