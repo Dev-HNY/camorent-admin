@@ -44,7 +44,20 @@ class NotificationService {
 
       // Request permission if not already granted
       if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
+        const { status } = await Notifications.requestPermissionsAsync({
+          ios: {
+            allowAlert: true,
+            allowBadge: true,
+            allowSound: true,
+            allowAnnouncements: true,
+            allowCriticalAlerts: true,
+          },
+          android: {
+            allowAlert: true,
+            allowBadge: true,
+            allowSound: true,
+          },
+        });
         finalStatus = status;
       }
 
@@ -61,19 +74,25 @@ class NotificationService {
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: '#FF6B35',
-          sound: 'default',
+          sound: 'default', // Uses default system sound
           enableLights: true,
           enableVibrate: true,
           showBadge: true,
+          lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+          bypassDnd: false, // Set to true if you want to bypass Do Not Disturb
         });
 
-        // Also create a default channel
+        // Also create a default channel with high priority
         await Notifications.setNotificationChannelAsync('default', {
-          name: 'Default',
+          name: 'Default Notifications',
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: '#FF6B35',
           sound: 'default',
+          enableLights: true,
+          enableVibrate: true,
+          showBadge: true,
+          lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
         });
       }
 

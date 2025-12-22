@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "CAMORENT Admin",
+    "name": "CAMO-Admin",
     "slug": "camorent-admin",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -33,8 +33,11 @@
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.VIBRATE",
-        "android.permission.POST_NOTIFICATIONS"
-      ]
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.WAKE_LOCK",
+        "android.permission.USE_FULL_SCREEN_INTENT"
+      ],
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/icon.png"
@@ -46,7 +49,9 @@
         {
           "icon": "./assets/icon.png",
           "color": "#FF6B35",
-          "defaultChannel": "booking_requests"
+          "defaultChannel": "booking_requests",
+          "sounds": [],
+          "mode": "production"
         }
       ]
     ],
