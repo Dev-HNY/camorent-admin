@@ -46,8 +46,7 @@
         {
           "icon": "./assets/icon.png",
           "color": "#FF6B35",
-          "defaultChannel": "booking_requests",
-          "sounds": ["default"]
+          "defaultChannel": "booking_requests"
         }
       ]
     ],
