@@ -40,8 +40,11 @@ export const AuthProvider = ({ children }) => {
         return { success: false, error: result.error };
       }
     } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, error: 'An unexpected error occurred' };
+      console.error('Login error in AuthContext:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      // Return the actual error message instead of generic one
+      const errorMessage = error.message || error.toString() || 'An unexpected error occurred';
+      return { success: false, error: errorMessage };
     }
   };
 

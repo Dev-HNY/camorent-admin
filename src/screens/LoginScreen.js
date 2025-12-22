@@ -33,6 +33,7 @@ export default function LoginScreen({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorDetails, setErrorDetails] = useState('');
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -129,12 +130,17 @@ export default function LoginScreen({ onLogin }) {
 
       if (result.success) {
         // Login successful, onLogin will be called by App.js watching auth state
+        setErrorDetails('');
         onLogin();
       } else {
-        Alert.alert('Login Failed', result.error || 'Invalid credentials');
+        const errorMsg = result.error || 'Invalid credentials';
+        setErrorDetails(errorMsg);
+        Alert.alert('Login Failed', errorMsg);
       }
     } catch (error) {
-      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+      const errorMsg = error.message || error.toString() || 'An unexpected error occurred. Please try again.';
+      setErrorDetails(errorMsg);
+      Alert.alert('Error', errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -373,6 +379,15 @@ export default function LoginScreen({ onLogin }) {
                 </LinearGradient>
               </TouchableOpacity>
             </Animated.View>
+
+            {/* Error Details Display - for debugging */}
+            {errorDetails ? (
+              <View style={styles.errorContainer}>
+                <Text style={dynamicStyles.errorText} numberOfLines={3}>
+                  {errorDetails}
+                </Text>
+              </View>
+            ) : null}
           </Animated.View>
 
           {/* Footer */}
@@ -468,6 +483,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
+  errorContainer: {
+    marginTop: 16,
+    padding: 12,
+    backgroundColor: 'rgba(255, 59, 48, 0.1)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 59, 48, 0.3)',
+  },
 });
 
 // Dynamic styles that change with theme
@@ -557,5 +580,11 @@ const createDynamicStyles = (theme) =>
       fontSize: 12,
       color: theme.securityText,
       fontWeight: '600',
+    },
+    errorText: {
+      fontSize: 12,
+      color: '#FF3B30',
+      fontWeight: '500',
+      textAlign: 'center',
     },
   });
