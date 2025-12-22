@@ -1,0 +1,205 @@
+/**
+ * Push Notification Service for Firebase Cloud Messaging
+ * Handles notification registration, permissions, and token management
+ */
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import { Platform } from 'react-native';
+import Constants from 'expo-constants';
+import { updateDeviceToken } from './api';
+
+// Configure how notifications should be displayed when app is in foreground
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
+class NotificationService {
+  constructor() {
+    this.expoPushToken = null;
+    this.notificationListener = null;
+    this.responseListener = null;
+  }
+
+  /**
+   * Register for push notifications
+   * @returns {Promise<string|null>} The device token or null if failed
+   */
+  async registerForPushNotifications() {
+    let token = null;
+
+    // Check if running on physical device
+    if (!Device.isDevice) {
+      console.warn('Push notifications only work on physical devices');
+      return null;
+    }
+
+    try {
+      // Check current permission status
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+
+      // Request permission if not already granted
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+
+      // If permission denied, return null
+      if (finalStatus !== 'granted') {
+        console.warn('Push notification permission denied');
+        return null;
+      }
+
+      // Configure Android notification channel BEFORE getting token
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('booking_requests', {
+          name: 'Booking Requests',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF6B35',
+          sound: 'default',
+          enableLights: true,
+          enableVibrate: true,
+          showBadge: true,
+        });
+
+        // Also create a default channel
+        await Notifications.setNotificationChannelAsync('default', {
+          name: 'Default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF6B35',
+          sound: 'default',
+        });
+      }
+
+      // Get the Expo push token with the EAS projectId
+      const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+
+      if (!projectId) {
+        console.error('EAS Project ID not found in app.json');
+        return null;
+      }
+
+      const tokenData = await Notifications.getExpoPushTokenAsync({
+        projectId: projectId,
+      });
+      token = tokenData.data;
+      console.log('Expo Push Token:', token);
+      console.log('Project ID:', projectId);
+
+      this.expoPushToken = token;
+      return token;
+
+    } catch (error) {
+      console.error('Error registering for push notifications:', error);
+      console.error('Error details:', error.message);
+      return null;
+    }
+  }
+
+  /**
+   * Send device token to backend server
+   * @param {string} token - The FCM device token
+   * @returns {Promise<boolean>} Success status
+   */
+  async sendTokenToBackend(token) {
+    try {
+      const result = await updateDeviceToken(token);
+      if (result.success) {
+        console.log('Device token registered with backend');
+        return true;
+      } else {
+        console.error('Failed to register device token:', result.error);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error sending token to backend:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Set up notification listeners
+   * @param {Function} onNotificationReceived - Callback when notification received while app is open
+   * @param {Function} onNotificationTapped - Callback when notification is tapped
+   */
+  setupNotificationListeners(onNotificationReceived, onNotificationTapped) {
+    // Listener for notifications received while app is in foreground
+    this.notificationListener = Notifications.addNotificationReceivedListener(notification => {
+      console.log('Notification received:', notification);
+      if (onNotificationReceived) {
+        onNotificationReceived(notification);
+      }
+    });
+
+    // Listener for when user taps on notification
+    this.responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log('Notification tapped:', response);
+      if (onNotificationTapped) {
+        onNotificationTapped(response);
+      }
+    });
+  }
+
+  /**
+   * Remove notification listeners
+   */
+  removeNotificationListeners() {
+    if (this.notificationListener) {
+      Notifications.removeNotificationSubscription(this.notificationListener);
+      this.notificationListener = null;
+    }
+
+    if (this.responseListener) {
+      Notifications.removeNotificationSubscription(this.responseListener);
+      this.responseListener = null;
+    }
+  }
+
+  /**
+   * Get last notification response (useful for handling notifications that opened the app)
+   * @returns {Promise<Object|null>} The last notification response
+   */
+  async getLastNotificationResponse() {
+    try {
+      const response = await Notifications.getLastNotificationResponseAsync();
+      return response;
+    } catch (error) {
+      console.error('Error getting last notification:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Clear all notifications
+   */
+  async clearAllNotifications() {
+    try {
+      await Notifications.dismissAllNotificationsAsync();
+    } catch (error) {
+      console.error('Error clearing notifications:', error);
+    }
+  }
+
+  /**
+   * Get notification permissions status
+   * @returns {Promise<string>} Permission status
+   */
+  async getPermissionStatus() {
+    try {
+      const { status } = await Notifications.getPermissionsAsync();
+      return status;
+    } catch (error) {
+      console.error('Error getting permission status:', error);
+      return 'undetermined';
+    }
+  }
+}
+
+// Export singleton instance
+export default new NotificationService();

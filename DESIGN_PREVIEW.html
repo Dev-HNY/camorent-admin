@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CamORent Admin - Design Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0A0A0A 0%, #1C1C1E 50%, #2C2C2E 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(112, 26, 211, 0.1);
+            border: 2px solid rgba(112, 26, 211, 0.3);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .logo-icon {
+            font-size: 40px;
+        }
+        
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #8E8E93;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .screens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+        
+        .phone-mockup {
+            background: linear-gradient(135deg, #1C1C1E 0%, #232325 100%);
+            border-radius: 40px;
+            padding: 20px;
+            border: 3px solid #2C2C2E;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .phone-mockup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 25px;
+            background: #0A0A0A;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+        
+        .screen-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 20px;
+            padding-top: 30px;
+        }
+        
+        .screen-content {
+            background: #0A0A0A;
+            border-radius: 30px;
+            overflow: hidden;
+            min-height: 600px;
+        }
+        
+        .screen-header {
+            background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
+            padding: 20px;
+            border-bottom: 1px solid #2C2C2E;
+        }
+        
+        .screen-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #FFFFFF;
+            text-align: center;
+        }
+        
+        .login-screen {
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 600px;
+        }
+        
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(112, 26, 211, 0.1);
+            border: 2px solid rgba(112, 26, 211, 0.3);
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+        
+        .login-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #FFFFFF;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .login-subtitle {
+            font-size: 14px;
+            color: #8E8E93;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #EBEBF5;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .input-field {
+            background: #1C1C1E;
+            border: 1.5px solid #701AD3;
+            border-radius: 14px;
+            padding: 16px;
+            color: #FFFFFF;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        .login-button {
+            background: linear-gradient(90deg, #701AD3 0%, #8B3DE6 100%);
+            border: none;
+            border-radius: 14px;
+            padding: 16px;
+            color: #FFFFFF;
+            font-size: 17px;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(112, 26, 211, 0.3);
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #1C1C1E 0%, #232325 100%);
+            border: 1px solid #2C2C2E;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+        
+        .badge {
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-high {
+            background: rgba(255, 69, 58, 0.15);
+            color: #FF453A;
+        }
+        
+        .badge-active {
+            background: rgba(52, 199, 89, 0.15);
+            color: #34C759;
+        }
+        
+        .badge-completed {
+            background: rgba(94, 92, 230, 0.15);
+            color: #5E5CE6;
+        }
+        
+        .card-info {
+            font-size: 14px;
+            color: #8E8E93;
+            margin-bottom: 8px;
+        }
+        
+        .card-info strong {
+            color: #EBEBF5;
+        }
+        
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 16px;
+            background: #1C1C1E;
+            border-top: 1px solid #2C2C2E;
+        }
+        
+        .nav-item {
+            text-align: center;
+            padding: 8px;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #8E8E93;
+        }
+        
+        .nav-item.active .nav-icon {
+            color: #701AD3;
+        }
+        
+        .nav-item.active .nav-label {
+            color: #701AD3;
+        }
+        
+        .features {
+            margin-top: 60px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid #2C2C2E;
+            border-radius: 24px;
+            padding: 40px;
+        }
+        
+        .features h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #FFFFFF;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature {
+            text-align: center;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #701AD3 0%, #8B3DE6 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+        }
+        
+        .feature h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+        
+        .feature p {
+            font-size: 14px;
+            color: #8E8E93;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+            
+            .screens-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <span class="logo-icon">📷</span>
+            </div>
+            <h1>CAMORENT Admin</h1>
+            <p class="subtitle">Mobile Application Design</p>
+        </div>
+        
+        <div class="screens-grid">
+            <!-- Login Screen -->
+            <div class="phone-mockup">
+                <h3 class="screen-title">Login Screen</h3>
+                <div class="screen-content">
+                    <div class="login-screen">
+                        <div class="login-logo">📷</div>
+                        <h2 class="login-title">CAMORENT</h2>
+                        <p class="login-subtitle">Admin Portal</p>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Email Address</label>
+                            <input type="text" class="input-field" placeholder="admin@camorent.com" value="admin@camorent.com">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label class="input-label">Password</label>
+                            <input type="password" class="input-field" placeholder="••••••••" value="password">
+                        </div>
+                        
+                        <button class="login-button">Sign In →</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Requests Screen -->
+            <div class="phone-mockup">
+                <h3 class="screen-title">Shoot Requests</h3>
+                <div class="screen-content">
+                    <div class="screen-header">
+                        <h2>Shoot Requests</h2>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Sarah Johnson</span>
+                            <span class="badge badge-high">High</span>
+                        </div>
+                        <p class="card-info">📍 Manhattan, NYC</p>
+                        <p class="card-info">📅 2024-12-18 • 3 days</p>
+                        <p class="card-info">💰 $2,500</p>
+                        <p class="card-info"><strong>Equipment:</strong> Canon EOS R5, RF 24-70mm f/2.8</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Michael Chen</span>
+                            <span class="badge" style="background: rgba(255, 159, 10, 0.15); color: #FF9F0A;">Medium</span>
+                        </div>
+                        <p class="card-info">📍 Brooklyn Studio</p>
+                        <p class="card-info">📅 2024-12-20 • 1 day</p>
+                        <p class="card-info">💰 $850</p>
+                    </div>
+                    
+                    <div class="bottom-nav">
+                        <div class="nav-item active">
+                            <div class="nav-icon">📄</div>
+                            <div class="nav-label">Requests</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">📹</div>
+                            <div class="nav-label">Ongoing</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">🕐</div>
+                            <div class="nav-label">Past</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ongoing Shoots Screen -->
+            <div class="phone-mockup">
+                <h3 class="screen-title">Ongoing Shoots</h3>
+                <div class="screen-content">
+                    <div class="screen-header">
+                        <h2>Ongoing Shoots</h2>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">David Park</span>
+                            <span class="badge badge-active">Active</span>
+                        </div>
+                        <p class="card-info">📍 Queens, NYC</p>
+                        <p class="card-info">⏰ 1 Day Left</p>
+                        <div style="background: #2C2C2E; border-radius: 12px; padding: 12px; margin-top: 12px;">
+                            <div style="background: #1C1C1E; height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: linear-gradient(90deg, #34C759, rgba(52, 199, 89, 0.5)); width: 66%; height: 100%;"></div>
+                            </div>
+                            <p style="color: #34C759; font-weight: 700; font-size: 13px; margin-top: 8px;">66% Complete</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Lisa Thompson</span>
+                            <span class="badge badge-active">Active</span>
+                        </div>
+                        <p class="card-info">📍 Manhattan Studio A</p>
+                        <p class="card-info">⏰ 3 Days Left</p>
+                    </div>
+                    
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <div class="nav-icon">📄</div>
+                            <div class="nav-label">Requests</div>
+                        </div>
+                        <div class="nav-item active">
+                            <div class="nav-icon">📹</div>
+                            <div class="nav-label">Ongoing</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">🕐</div>
+                            <div class="nav-label">Past</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Past Shoots Screen -->
+            <div class="phone-mockup">
+                <h3 class="screen-title">Past Shoots</h3>
+                <div class="screen-content">
+                    <div class="screen-header">
+                        <h2>Past Shoots</h2>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Alex Rivera</span>
+                            <span class="badge badge-completed">Completed</span>
+                        </div>
+                        <p class="card-info">📍 Brooklyn Warehouse</p>
+                        <p class="card-info">📅 5 Days • Dec 8-12</p>
+                        <p class="card-info">💰 $3,200 Revenue</p>
+                        <div style="margin-top: 12px; display: flex; gap: 4px;">
+                            <span style="color: #FFD60A; font-size: 16px;">⭐⭐⭐⭐⭐</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Sophia Martinez</span>
+                            <span class="badge badge-completed">Completed</span>
+                        </div>
+                        <p class="card-info">📍 Manhattan Loft</p>
+                        <p class="card-info">💰 $5,800 Revenue</p>
+                        <div style="margin-top: 12px; display: flex; gap: 4px;">
+                            <span style="color: #FFD60A; font-size: 16px;">⭐⭐⭐⭐⭐</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bottom-nav">
+                        <div class="nav-item">
+                            <div class="nav-icon">📄</div>
+                            <div class="nav-label">Requests</div>
+                        </div>
+                        <div class="nav-item">
+                            <div class="nav-icon">📹</div>
+                            <div class="nav-label">Ongoing</div>
+                        </div>
+                        <div class="nav-item active">
+                            <div class="nav-icon">🕐</div>
+                            <div class="nav-label">Past</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h2>Key Features</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Secure Login</h3>
+                    <p>Admin-only authentication with elegant gradient design and input validation</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real-time Analytics</h3>
+                    <p>Track requests, revenue, and performance metrics at a glance</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Priority Management</h3>
+                    <p>Visual indicators for high, medium, and low priority requests</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Optimized</h3>
+                    <p>Native iOS and Android apps with smooth animations and transitions</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Quick Actions</h3>
+                    <p>Approve, decline, contact, and complete shoots with one tap</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🌙</div>
+                    <h3>Dark Theme</h3>
+                    <p>Professional dark UI design optimized for long-term use and readability</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
