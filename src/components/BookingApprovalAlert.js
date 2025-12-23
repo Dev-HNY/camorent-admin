@@ -322,6 +322,11 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                   <Text style={[styles.detailValue, dynamicStyles.value]}>
                     {bookingData.rental_days} {bookingData.rental_days === 1 ? 'Day' : 'Days'}
                   </Text>
+                  {bookingData.rental_start_date && bookingData.rental_end_date && (
+                    <Text style={[styles.dateRangeText, dynamicStyles.label]}>
+                      {new Date(bookingData.rental_start_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} - {new Date(bookingData.rental_end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </Text>
+                  )}
                 </View>
               </View>
 
@@ -614,6 +619,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     textAlign: 'center',
+  },
+  dateRangeText: {
+    fontSize: 10,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginTop: 4,
+    opacity: 0.75,
   },
   amountCard: {
     padding: 16,
