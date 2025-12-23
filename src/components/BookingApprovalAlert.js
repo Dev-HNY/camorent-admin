@@ -253,12 +253,12 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                 colors={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.1)']}
                 style={styles.iconGradient}
               >
-                <Ionicons name="notifications" size={36} color="#FFF" />
+                <Ionicons name="notifications" size={30} color="#FFF" />
               </LinearGradient>
             </Animated.View>
 
             <Text style={styles.headerTitle}>🎬 New Booking Request</Text>
-            <Text style={styles.headerSubtitle}>Requires your immediate attention</Text>
+            <Text style={styles.headerSubtitle}>Requires your attention</Text>
           </LinearGradient>
 
           {/* Content with ScrollView for long content */}
@@ -267,7 +267,7 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
               {/* Customer Info Card */}
               <Animated.View style={[styles.infoCard, dynamicStyles.infoCard]}>
                 <View style={styles.infoCardHeader}>
-                  <Ionicons name="person-circle" size={24} color={BRAND_COLORS.primary} />
+                  <Ionicons name="person-circle" size={20} color={BRAND_COLORS.primary} />
                   <Text style={styles.infoCardTitle}>Customer Details</Text>
                 </View>
                 <Text style={[styles.customerName, dynamicStyles.value]}>
@@ -280,7 +280,7 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                 {/* Shoot Type */}
                 <View style={[styles.detailBox, dynamicStyles.infoCard]}>
                   <View style={styles.detailIcon}>
-                    <Ionicons name="camera" size={24} color={BRAND_COLORS.primary} />
+                    <Ionicons name="camera" size={20} color={BRAND_COLORS.primary} />
                   </View>
                   <Text style={[styles.detailLabel, dynamicStyles.label]}>Shoot Type</Text>
                   <Text style={[styles.detailValue, dynamicStyles.value]} numberOfLines={2}>
@@ -291,7 +291,7 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                 {/* Duration */}
                 <View style={[styles.detailBox, dynamicStyles.infoCard]}>
                   <View style={styles.detailIcon}>
-                    <Ionicons name="calendar" size={24} color={BRAND_COLORS.primary} />
+                    <Ionicons name="calendar" size={20} color={BRAND_COLORS.primary} />
                   </View>
                   <Text style={[styles.detailLabel, dynamicStyles.label]}>Duration</Text>
                   <Text style={[styles.detailValue, dynamicStyles.value]}>
@@ -311,7 +311,7 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                 style={styles.amountCard}
               >
                 <View style={styles.amountHeader}>
-                  <Ionicons name="cash" size={28} color={BRAND_COLORS.primary} />
+                  <Ionicons name="cash" size={22} color={BRAND_COLORS.primary} />
                   <Text style={[styles.amountLabel, dynamicStyles.label]}>Total Amount</Text>
                 </View>
                 <Text style={styles.amountValue}>
@@ -421,8 +421,8 @@ const styles = StyleSheet.create({
     elevation: 20,
   },
   header: {
-    paddingVertical: 28,
-    paddingHorizontal: 24,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
@@ -441,38 +441,38 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   iconGradient: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   headerTitle: {
-    fontSize: 22,
-    fontWeight: '800',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#FFF',
     textAlign: 'center',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
   headerSubtitle: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: '500',
     color: 'rgba(255, 255, 255, 0.85)',
     textAlign: 'center',
-    marginTop: 4,
+    marginTop: 2,
   },
   scrollContent: {
     maxHeight: height * 0.45,
   },
   content: {
-    padding: 20,
+    padding: 16,
   },
   infoCard: {
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 16,
+    padding: 14,
+    borderRadius: 14,
+    marginBottom: 14,
     borderWidth: 1,
   },
   infoCardHeader: {
@@ -482,109 +482,109 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   infoCardTitle: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: '600',
     color: BRAND_COLORS.primary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   customerName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '700',
-    marginTop: 4,
+    marginTop: 2,
   },
   detailsGrid: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
+    gap: 10,
+    marginBottom: 14,
   },
   detailBox: {
     flex: 1,
-    padding: 16,
-    borderRadius: 16,
+    padding: 12,
+    borderRadius: 14,
     borderWidth: 1,
     alignItems: 'center',
   },
   detailIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: 'rgba(112, 26, 211, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   detailLabel: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-    marginBottom: 6,
+    marginBottom: 4,
     textAlign: 'center',
   },
   detailValue: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     textAlign: 'center',
   },
   amountCard: {
-    padding: 20,
-    borderRadius: 16,
-    marginBottom: 16,
-    borderWidth: 2,
+    padding: 16,
+    borderRadius: 14,
+    marginBottom: 14,
+    borderWidth: 1.5,
     borderColor: BRAND_COLORS.primary,
   },
   amountHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   amountLabel: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   amountValue: {
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: '900',
     color: BRAND_COLORS.primary,
-    marginVertical: 4,
+    marginVertical: 2,
   },
   amountBreakdown: {
-    marginTop: 4,
+    marginTop: 2,
   },
   amountNote: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500',
   },
   divider: {
     height: 1,
-    marginVertical: 16,
+    marginVertical: 12,
   },
   infoBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    padding: 12,
+    padding: 10,
     backgroundColor: 'rgba(112, 26, 211, 0.08)',
-    borderRadius: 12,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: 'rgba(112, 26, 211, 0.2)',
   },
   infoBannerText: {
     flex: 1,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500',
-    lineHeight: 16,
+    lineHeight: 15,
   },
   actionsContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 12,
-    gap: 12,
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 10,
+    gap: 10,
   },
   button: {
     flex: 1,
@@ -600,22 +600,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
-    gap: 8,
+    paddingVertical: 14,
+    gap: 6,
   },
   buttonText: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
   },
   closeButton: {
-    paddingVertical: 14,
+    paddingVertical: 12,
     alignItems: 'center',
   },
   closeButtonText: {
     color: BRAND_COLORS.primary,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
   },
 });
