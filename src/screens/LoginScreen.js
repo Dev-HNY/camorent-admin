@@ -205,7 +205,7 @@ export default function LoginScreen({ onLogin }) {
               ]}
             >
               <Image
-                source={require('../../assets/icon.png')}
+                source={require('../../assets/icon-black.png')}
                 style={styles.logoImage}
                 resizeMode="contain"
               />

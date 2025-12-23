@@ -168,11 +168,21 @@ export default function OngoingShootsScreen() {
         useNativeDriver: true,
       }).start();
     }, 200);
+
+    // Auto-refresh every 30 seconds
+    const refreshInterval = setInterval(() => {
+      fetchOngoingShoots(true); // Silent refresh
+    }, 30000);
+
+    // Cleanup
+    return () => clearInterval(refreshInterval);
   }, []);
 
-  const fetchOngoingShoots = async () => {
+  const fetchOngoingShoots = async (silent = false) => {
     try {
-      setIsLoading(true);
+      if (!silent) {
+        setIsLoading(true);
+      }
       setError(null);
 
       const result = await getOngoingBookings(1, 50);
@@ -228,7 +238,9 @@ export default function OngoingShootsScreen() {
       // Use mock data as fallback
       setOngoingShoots(MOCK_ONGOING_SHOOTS);
     } finally {
-      setIsLoading(false);
+      if (!silent) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -322,7 +334,7 @@ export default function OngoingShootsScreen() {
                 },
               ]}
             >
-              <View style={[dynamicStyles.statIconContainer, { backgroundColor: 'rgba(112, 26, 211, 0.15)' }]}>
+              <View style={[dynamicStyles.statIconContainer, { backgroundColor: 'rgba(0, 0, 0, 0.1)' }]}>
                 <Ionicons name="calendar" size={24} color={BRAND_COLORS.primary} />
               </View>
               <Text style={[styles.statNumber, { color: BRAND_COLORS.primary }]}>

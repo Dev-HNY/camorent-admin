@@ -1,9 +1,9 @@
-// Camorent Brand Colors - Maintaining brand identity
+// Camorent Brand Colors - Black Theme
 export const BRAND_COLORS = {
-  primary: '#701AD3',
-  primaryLight: '#8B3DE6',
-  primaryDark: '#5A15A8',
-  accent: '#9D4EDD',
+  primary: '#000000',
+  primaryLight: '#1C1C1E',
+  primaryDark: '#000000',
+  accent: '#2C2C2E',
   success: '#34C759',
   warning: '#FF9500',
   error: '#FF3B30',
@@ -12,19 +12,19 @@ export const BRAND_COLORS = {
 // Dark Theme
 export const DARK_THEME = {
   // Background gradients
-  gradientStart: '#0A0A0A',
-  gradientMid: '#1C1C1E',
-  gradientEnd: '#2C2C2E',
+  gradientStart: '#000000',
+  gradientMid: '#0A0A0A',
+  gradientEnd: '#1C1C1E',
 
   // Surface colors
   surface: '#1C1C1E',
-  surfaceElevated: '#232325',
-  surfaceBorder: '#2C2C2E',
-  surfaceBorderFocused: BRAND_COLORS.primary,
+  surfaceElevated: '#2C2C2E',
+  surfaceBorder: '#3A3A3C',
+  surfaceBorderFocused: '#FFFFFF',
 
   // Logo container
-  logoBackground: 'rgba(112, 26, 211, 0.1)',
-  logoBorder: 'rgba(112, 26, 211, 0.2)',
+  logoBackground: 'rgba(255, 255, 255, 0.05)',
+  logoBorder: 'rgba(255, 255, 255, 0.1)',
 
   // Text colors
   textPrimary: '#FFFFFF',
@@ -35,17 +35,17 @@ export const DARK_THEME = {
 
   // Input colors
   inputBackground: '#1C1C1E',
-  inputBackgroundFocused: '#232325',
-  inputBorder: '#2C2C2E',
-  inputBorderFocused: BRAND_COLORS.primary,
+  inputBackgroundFocused: '#2C2C2E',
+  inputBorder: '#3A3A3C',
+  inputBorderFocused: '#FFFFFF',
   inputIcon: '#8E8E93',
   inputPlaceholder: '#48484A',
 
   // Button colors
-  buttonGradientEnabled: [BRAND_COLORS.primary, BRAND_COLORS.primaryLight],
+  buttonGradientEnabled: ['#000000', '#1C1C1E'],
   buttonGradientDisabled: ['#3A3A3C', '#48484A'],
   buttonText: '#FFFFFF',
-  buttonShadow: BRAND_COLORS.primary,
+  buttonShadow: '#000000',
 
   // Security badge
   securityBackground: 'rgba(52, 199, 89, 0.1)',
@@ -70,8 +70,8 @@ export const LIGHT_THEME = {
   surfaceBorderFocused: BRAND_COLORS.primary,
 
   // Logo container
-  logoBackground: 'rgba(112, 26, 211, 0.08)',
-  logoBorder: 'rgba(112, 26, 211, 0.15)',
+  logoBackground: 'rgba(0, 0, 0, 0.08)',
+  logoBorder: 'rgba(0, 0, 0, 0.15)',
 
   // Text colors
   textPrimary: '#000000',

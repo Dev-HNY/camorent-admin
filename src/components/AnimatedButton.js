@@ -92,7 +92,7 @@ const AnimatedButton = ({
   const getVariantStyles = () => {
     const variants = {
       primary: {
-        background: ['#701AD3', '#8B2FE0', '#A04BE8'],
+        background: ['#000000', '#1C1C1E', '#2C2C2E'],
         text: '#FFFFFF',
         border: 'transparent',
       },
@@ -118,8 +118,8 @@ const AnimatedButton = ({
       },
       ghost: {
         background: ['transparent', 'transparent'],
-        text: '#701AD3',
-        border: '#701AD3',
+        text: '#000000',
+        border: '#000000',
       },
     };
 

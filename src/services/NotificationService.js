@@ -98,7 +98,7 @@ class NotificationService {
           description: 'Critical booking requests that require immediate attention',
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 500, 500, 800, 1000, 1300, 1500, 2000, 2500, 3000], // Longer, more persistent vibration
-          lightColor: '#701AD3', // Brand purple color
+          lightColor: '#000000', // Brand black color
           sound: 'notification_sound.wav', // Custom sound (will use default if file not found)
           enableLights: true,
           enableVibrate: true,

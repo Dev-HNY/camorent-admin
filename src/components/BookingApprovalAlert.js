@@ -19,7 +19,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { getTheme, BRAND_COLORS } from '../theme/colors';
-import { approveBooking, rejectBooking } from '../services/api';
+import { approveBooking, rejectBooking, getBookingDetails } from '../services/api';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,6 +29,8 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
 
   const [isApproving, setIsApproving] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
+  const [fullBookingDetails, setFullBookingDetails] = useState(null);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
 
   // Animation values
   const scaleAnim = useRef(new Animated.Value(0)).current;
@@ -36,6 +38,29 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
   const slideAnim = useRef(new Animated.Value(50)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const shimmerAnim = useRef(new Animated.Value(0)).current;
+
+  // Fetch full booking details when popup opens
+  useEffect(() => {
+    if (visible && bookingData?.booking_id) {
+      fetchBookingDetails();
+    }
+  }, [visible, bookingData?.booking_id]);
+
+  const fetchBookingDetails = async () => {
+    if (!bookingData?.booking_id) return;
+
+    setIsLoadingDetails(true);
+    try {
+      const result = await getBookingDetails(bookingData.booking_id);
+      if (result.success) {
+        setFullBookingDetails(result.data);
+      }
+    } catch (error) {
+      console.error('Error fetching booking details:', error);
+    } finally {
+      setIsLoadingDetails(false);
+    }
+  };
 
   useEffect(() => {
     if (visible) {
@@ -96,6 +121,7 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
       slideAnim.setValue(50);
       pulseAnim.setValue(1);
       shimmerAnim.setValue(0);
+      setFullBookingDetails(null);
     }
   }, [visible]);
 
@@ -178,11 +204,11 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
     },
     card: {
       backgroundColor: theme.surface,
-      borderColor: isDark ? 'rgba(112, 26, 211, 0.3)' : 'rgba(112, 26, 211, 0.1)',
+      borderColor: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)',
     },
     infoCard: {
-      backgroundColor: isDark ? 'rgba(112, 26, 211, 0.1)' : 'rgba(112, 26, 211, 0.05)',
-      borderColor: isDark ? 'rgba(112, 26, 211, 0.3)' : 'rgba(112, 26, 211, 0.2)',
+      backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
+      borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)',
     },
     label: {
       color: theme.textTertiary,
@@ -303,8 +329,8 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
               {/* Amount Card - Highlighted */}
               <LinearGradient
                 colors={[
-                  isDark ? 'rgba(112, 26, 211, 0.2)' : 'rgba(112, 26, 211, 0.1)',
-                  isDark ? 'rgba(157, 78, 221, 0.2)' : 'rgba(157, 78, 221, 0.1)',
+                  isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+                  isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
                 ]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -324,12 +350,56 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                 </View>
               </LinearGradient>
 
+              {/* Equipment Details */}
+              {fullBookingDetails?.equipment && fullBookingDetails.equipment.length > 0 && (
+                <View style={[styles.detailsSection, dynamicStyles.infoCard]}>
+                  <View style={styles.sectionHeader}>
+                    <Ionicons name="hardware-chip" size={18} color={BRAND_COLORS.primary} />
+                    <Text style={styles.sectionTitle}>Equipment</Text>
+                  </View>
+                  {fullBookingDetails.equipment.map((item, index) => (
+                    <View key={index} style={styles.listItem}>
+                      <View style={styles.bulletPoint} />
+                      <Text style={[styles.listItemText, dynamicStyles.value]}>
+                        {item.name || item.equipment_name} {item.quantity && `(×${item.quantity})`}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {/* Crew Details */}
+              {fullBookingDetails?.crew && fullBookingDetails.crew.length > 0 && (
+                <View style={[styles.detailsSection, dynamicStyles.infoCard]}>
+                  <View style={styles.sectionHeader}>
+                    <Ionicons name="people" size={18} color={BRAND_COLORS.primary} />
+                    <Text style={styles.sectionTitle}>Crew Members</Text>
+                  </View>
+                  {fullBookingDetails.crew.map((member, index) => (
+                    <View key={index} style={styles.listItem}>
+                      <View style={styles.bulletPoint} />
+                      <Text style={[styles.listItemText, dynamicStyles.value]}>
+                        {member.name || member.crew_name} {member.role && `- ${member.role}`}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              {/* Loading state for details */}
+              {isLoadingDetails && (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="small" color={BRAND_COLORS.primary} />
+                  <Text style={[styles.loadingText, dynamicStyles.label]}>Loading details...</Text>
+                </View>
+              )}
+
               {/* Divider */}
               <View style={[styles.divider, dynamicStyles.divider]} />
 
               {/* Info Banner */}
               <View style={styles.infoBanner}>
-                <Ionicons name="information-circle" size={20} color={BRAND_COLORS.primary} />
+                <Ionicons name="information-circle" size={16} color={BRAND_COLORS.primary} />
                 <Text style={[styles.infoBannerText, dynamicStyles.label]}>
                   Taking action will immediately notify the customer
                 </Text>
@@ -509,7 +579,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(112, 26, 211, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
@@ -559,6 +629,56 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '500',
   },
+  detailsSection: {
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: BRAND_COLORS.primary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 6,
+    paddingLeft: 4,
+  },
+  bulletPoint: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: BRAND_COLORS.primary,
+    marginTop: 6,
+    marginRight: 8,
+  },
+  listItemText: {
+    fontSize: 13,
+    fontWeight: '500',
+    flex: 1,
+    lineHeight: 18,
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    padding: 16,
+  },
+  loadingText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
   divider: {
     height: 1,
     marginVertical: 12,
@@ -568,10 +688,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     padding: 10,
-    backgroundColor: 'rgba(112, 26, 211, 0.08)',
+    backgroundColor: 'rgba(0, 0, 0, 0.08)',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'rgba(112, 26, 211, 0.2)',
+    borderColor: 'rgba(0, 0, 0, 0.15)',
   },
   infoBannerText: {
     flex: 1,

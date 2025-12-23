@@ -190,11 +190,21 @@ export default function PastShootsScreen() {
         useNativeDriver: true,
       }).start();
     }, 350);
+
+    // Auto-refresh every 30 seconds
+    const refreshInterval = setInterval(() => {
+      fetchPastShoots(true); // Silent refresh
+    }, 30000);
+
+    // Cleanup
+    return () => clearInterval(refreshInterval);
   }, []);
 
-  const fetchPastShoots = async () => {
+  const fetchPastShoots = async (silent = false) => {
     try {
-      setIsLoading(true);
+      if (!silent) {
+        setIsLoading(true);
+      }
       setError(null);
 
       const result = await getCompletedBookings(1, 50);
@@ -241,7 +251,9 @@ export default function PastShootsScreen() {
       // Use mock data as fallback
       setPastShoots(MOCK_PAST_SHOOTS);
     } finally {
-      setIsLoading(false);
+      if (!silent) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -338,7 +350,7 @@ export default function PastShootsScreen() {
                 },
               ]}
             >
-              <View style={[dynamicStyles.analyticsIconContainer, { backgroundColor: 'rgba(112, 26, 211, 0.15)' }]}>
+              <View style={[dynamicStyles.analyticsIconContainer, { backgroundColor: 'rgba(0, 0, 0, 0.1)' }]}>
                 <Ionicons name="checkmark-done" size={22} color={BRAND_COLORS.primary} />
               </View>
               <Text style={[styles.analyticsNumber, { color: BRAND_COLORS.primary }]}>

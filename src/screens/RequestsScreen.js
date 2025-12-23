@@ -148,6 +148,14 @@ export default function RequestsScreen() {
 
     // Fetch bookings on mount
     fetchBookings();
+
+    // Auto-refresh every 30 seconds
+    const refreshInterval = setInterval(() => {
+      fetchBookings(true); // Silent refresh (no loading state)
+    }, 30000); // 30 seconds
+
+    // Cleanup interval on unmount
+    return () => clearInterval(refreshInterval);
   }, []);
 
   // Refetch when view filter changes
@@ -155,9 +163,11 @@ export default function RequestsScreen() {
     fetchBookings();
   }, [viewFilter]);
 
-  const fetchBookings = async () => {
+  const fetchBookings = async (silent = false) => {
     try {
-      setIsLoading(true);
+      if (!silent) {
+        setIsLoading(true);
+      }
       setError(null);
 
       // Fetch based on view filter
@@ -208,7 +218,9 @@ export default function RequestsScreen() {
       // Use mock data as fallback
       setPendingRequests(MOCK_REQUESTS.filter(r => r.status === 'pending'));
     } finally {
-      setIsLoading(false);
+      if (!silent) {
+        setIsLoading(false);
+      }
     }
   };
 
