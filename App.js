@@ -159,6 +159,15 @@ function AppContent() {
             shoot_name: data.shoot_name,
             total_amount: data.total_amount,
             rental_days: data.rental_days,
+            equipment: (data.equipment_details || []).map((item, idx) => ({
+              equipment_name: item,
+              quantity: 1,
+              id: idx
+            })),
+            crew: (data.crew_details || []).map((item, idx) => ({
+              crew_name: item,
+              id: idx
+            })),
           });
           setShowApprovalAlert(true);
         }
@@ -176,6 +185,15 @@ function AppContent() {
             shoot_name: data.shoot_name,
             total_amount: data.total_amount,
             rental_days: data.rental_days,
+            equipment: (data.equipment_details || []).map((item, idx) => ({
+              equipment_name: item,
+              quantity: 1,
+              id: idx
+            })),
+            crew: (data.crew_details || []).map((item, idx) => ({
+              crew_name: item,
+              id: idx
+            })),
           });
           setShowApprovalAlert(true);
         }
@@ -198,6 +216,15 @@ function AppContent() {
           shoot_name: data.shoot_name,
           total_amount: data.total_amount,
           rental_days: data.rental_days,
+          equipment: (data.equipment_details || []).map((item, idx) => ({
+            equipment_name: item,
+            quantity: 1,
+            id: idx
+          })),
+          crew: (data.crew_details || []).map((item, idx) => ({
+            crew_name: item,
+            id: idx
+          })),
         });
         setShowApprovalAlert(true);
       }
