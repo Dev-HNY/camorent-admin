@@ -290,27 +290,26 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
           {/* Content with ScrollView for long content */}
           <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
             <View style={styles.content}>
-              {/* Customer Info Card */}
-              <Animated.View style={[styles.infoCard, dynamicStyles.infoCard]}>
-                <View style={styles.infoCardHeader}>
-                  <Ionicons name="person-circle" size={20} color={BRAND_COLORS.primary} />
-                  <Text style={styles.infoCardTitle}>Customer Details</Text>
+              {/* Shoot Name - Main Title */}
+              <Animated.View style={[styles.shootNameCard, dynamicStyles.infoCard]}>
+                <View style={styles.shootNameHeader}>
+                  <Ionicons name="camera" size={24} color={BRAND_COLORS.primary} />
+                  <Text style={[styles.shootNameText, dynamicStyles.value]}>
+                    {bookingData.shoot_name}
+                  </Text>
                 </View>
-                <Text style={[styles.customerName, dynamicStyles.value]}>
-                  {bookingData.customer_name}
-                </Text>
               </Animated.View>
 
-              {/* Booking Details Grid */}
+              {/* Customer & Duration Grid */}
               <View style={styles.detailsGrid}>
-                {/* Shoot Type */}
+                {/* Customer */}
                 <View style={[styles.detailBox, dynamicStyles.infoCard]}>
                   <View style={styles.detailIcon}>
-                    <Ionicons name="camera" size={20} color={BRAND_COLORS.primary} />
+                    <Ionicons name="person-circle" size={20} color={BRAND_COLORS.primary} />
                   </View>
-                  <Text style={[styles.detailLabel, dynamicStyles.label]}>Shoot Type</Text>
+                  <Text style={[styles.detailLabel, dynamicStyles.label]}>Customer</Text>
                   <Text style={[styles.detailValue, dynamicStyles.value]} numberOfLines={2}>
-                    {bookingData.shoot_name}
+                    {bookingData.customer_name}
                   </Text>
                 </View>
 
@@ -350,32 +349,34 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                 </View>
               </LinearGradient>
 
-              {/* Equipment Details */}
-              {fullBookingDetails?.equipment && fullBookingDetails.equipment.length > 0 && (
+              {/* Equipment Details - Show from bookingData or fullBookingDetails */}
+              {((bookingData?.equipment && bookingData.equipment.length > 0) ||
+                (fullBookingDetails?.equipment && fullBookingDetails.equipment.length > 0)) && (
                 <View style={[styles.detailsSection, dynamicStyles.infoCard]}>
                   <View style={styles.sectionHeader}>
                     <Ionicons name="hardware-chip" size={18} color={BRAND_COLORS.primary} />
                     <Text style={styles.sectionTitle}>Equipment</Text>
                   </View>
-                  {fullBookingDetails.equipment.map((item, index) => (
+                  {(fullBookingDetails?.equipment || bookingData?.equipment || []).map((item, index) => (
                     <View key={index} style={styles.listItem}>
                       <View style={styles.bulletPoint} />
                       <Text style={[styles.listItemText, dynamicStyles.value]}>
-                        {item.name || item.equipment_name} {item.quantity && `(×${item.quantity})`}
+                        {item.name || item.equipment_name || item.camera_name} {item.quantity && `(×${item.quantity})`}
                       </Text>
                     </View>
                   ))}
                 </View>
               )}
 
-              {/* Crew Details */}
-              {fullBookingDetails?.crew && fullBookingDetails.crew.length > 0 && (
+              {/* Crew Details - Show from bookingData or fullBookingDetails */}
+              {((bookingData?.crew && bookingData.crew.length > 0) ||
+                (fullBookingDetails?.crew && fullBookingDetails.crew.length > 0)) && (
                 <View style={[styles.detailsSection, dynamicStyles.infoCard]}>
                   <View style={styles.sectionHeader}>
                     <Ionicons name="people" size={18} color={BRAND_COLORS.primary} />
                     <Text style={styles.sectionTitle}>Crew Members</Text>
                   </View>
-                  {fullBookingDetails.crew.map((member, index) => (
+                  {(fullBookingDetails?.crew || bookingData?.crew || []).map((member, index) => (
                     <View key={index} style={styles.listItem}>
                       <View style={styles.bulletPoint} />
                       <Text style={[styles.listItemText, dynamicStyles.value]}>
@@ -538,6 +539,23 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
+  },
+  shootNameCard: {
+    padding: 16,
+    borderRadius: 14,
+    marginBottom: 14,
+    borderWidth: 1,
+  },
+  shootNameHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  shootNameText: {
+    fontSize: 20,
+    fontWeight: '700',
+    flex: 1,
+    lineHeight: 26,
   },
   infoCard: {
     padding: 14,
