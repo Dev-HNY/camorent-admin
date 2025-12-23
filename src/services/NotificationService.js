@@ -10,11 +10,17 @@ import { updateDeviceToken } from './api';
 
 // Configure how notifications should be displayed when app is in foreground
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
+  handleNotification: async (notification) => {
+    const isBookingRequest = notification.request.content.data?.type === 'booking_request';
+
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+      // For booking requests, use high priority
+      priority: isBookingRequest ? Notifications.AndroidNotificationPriority.MAX : Notifications.AndroidNotificationPriority.HIGH,
+    };
+  },
 });
 
 class NotificationService {
@@ -79,7 +85,7 @@ class NotificationService {
           enableVibrate: true,
           showBadge: true,
           lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
-          bypassDnd: false, // Set to true if you want to bypass Do Not Disturb
+          bypassDnd: true, // Bypass Do Not Disturb for critical booking requests
         });
 
         // Also create a default channel with high priority
@@ -93,7 +99,12 @@ class NotificationService {
           enableVibrate: true,
           showBadge: true,
           lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+          bypassDnd: true,
         });
+
+        console.log('📱 Android notification channels configured with MAX importance');
+        console.log('✅ Full-screen intent permission requested');
+        console.log('✅ Bypass DND enabled for critical notifications');
       }
 
       // Get the Expo push token with the EAS projectId

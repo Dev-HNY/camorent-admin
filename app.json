@@ -35,9 +35,12 @@
         "android.permission.VIBRATE",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.WAKE_LOCK",
-        "android.permission.USE_FULL_SCREEN_INTENT"
+        "android.permission.USE_FULL_SCREEN_INTENT",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.ACCESS_NOTIFICATION_POLICY"
       ],
-      "useNextNotificationsApi": true
+      "useNextNotificationsApi": true,
+      "allowBackup": false
     },
     "web": {
       "favicon": "./assets/icon.png"
@@ -51,7 +54,9 @@
           "color": "#FF6B35",
           "defaultChannel": "booking_requests",
           "sounds": [],
-          "mode": "production"
+          "mode": "production",
+          "androidMode": "default",
+          "androidCollapsedTitle": "New Booking Request"
         }
       ]
     ],
