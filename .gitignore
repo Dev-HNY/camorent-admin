@@ -74,3 +74,8 @@ web-build/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Firebase credentials (SENSITIVE - DO NOT COMMIT)
+firebase-service-account.json
+*firebase-adminsdk*.json
+google-services.json

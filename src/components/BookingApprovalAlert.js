@@ -1,8 +1,8 @@
 /**
  * BookingApprovalAlert Component
- * Beautiful custom alert for booking request notifications with approve/reject actions
+ * Enhanced booking request notification with detailed info, animations, and beautiful UI
  */
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Modal,
   View,
@@ -13,6 +13,7 @@ import {
   Dimensions,
   ActivityIndicator,
   Alert,
+  ScrollView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -32,27 +33,69 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
   // Animation values
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(50)).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const shimmerAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) {
+      // Reset animations
+      scaleAnim.setValue(0);
+      fadeAnim.setValue(0);
+      slideAnim.setValue(50);
+
       // Animate in
       Animated.parallel([
         Animated.spring(scaleAnim, {
           toValue: 1,
-          tension: 50,
-          friction: 7,
+          tension: 60,
+          friction: 8,
           useNativeDriver: true,
         }),
         Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 200,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.spring(slideAnim, {
+          toValue: 0,
+          tension: 50,
+          friction: 7,
           useNativeDriver: true,
         }),
       ]).start();
+
+      // Continuous pulse animation for notification icon
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.2,
+            duration: 800,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 800,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+
+      // Shimmer effect
+      Animated.loop(
+        Animated.timing(shimmerAnim, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: true,
+        })
+      ).start();
     } else {
       // Reset animations
       scaleAnim.setValue(0);
       fadeAnim.setValue(0);
+      slideAnim.setValue(50);
+      pulseAnim.setValue(1);
+      shimmerAnim.setValue(0);
     }
   }, [visible]);
 
@@ -60,8 +103,8 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
     if (!bookingData?.booking_id) return;
 
     Alert.alert(
-      'Approve Booking',
-      `Approve booking request from ${bookingData.customer_name}?\n\nThis will notify the customer and proceed with the booking.`,
+      '✅ Approve Booking',
+      `Approve booking request from ${bookingData.customer_name}?\n\n✓ Customer will be notified\n✓ Booking will be confirmed\n✓ Payment link will be sent`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -72,14 +115,14 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
             try {
               const result = await approveBooking(bookingData.booking_id);
               if (result.success) {
-                Alert.alert('Success', 'Booking approved successfully!');
+                Alert.alert('🎉 Success', 'Booking approved successfully!\nCustomer has been notified.');
                 if (onActionComplete) onActionComplete('approved');
                 onClose();
               } else {
-                Alert.alert('Error', result.error || 'Failed to approve booking');
+                Alert.alert('❌ Error', result.error || 'Failed to approve booking');
               }
             } catch (error) {
-              Alert.alert('Error', 'An unexpected error occurred');
+              Alert.alert('❌ Error', 'An unexpected error occurred');
             } finally {
               setIsApproving(false);
             }
@@ -93,8 +136,8 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
     if (!bookingData?.booking_id) return;
 
     Alert.alert(
-      'Reject Booking',
-      `Reject booking request from ${bookingData.customer_name}?\n\nThis will notify the customer that their request was declined.`,
+      '❌ Reject Booking',
+      `Reject booking request from ${bookingData.customer_name}?\n\n⚠ Customer will be notified\n⚠ This action cannot be undone`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -105,7 +148,7 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
             try {
               const result = await rejectBooking(bookingData.booking_id);
               if (result.success) {
-                Alert.alert('Booking Rejected', 'The customer will be notified.');
+                Alert.alert('Booking Rejected', 'The customer has been notified.');
                 if (onActionComplete) onActionComplete('rejected');
                 onClose();
               } else {
@@ -124,26 +167,31 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
 
   if (!visible || !bookingData) return null;
 
+  const shimmerTranslate = shimmerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-width, width],
+  });
+
   const dynamicStyles = StyleSheet.create({
     overlay: {
-      backgroundColor: isDark ? 'rgba(0, 0, 0, 0.85)' : 'rgba(0, 0, 0, 0.6)',
+      backgroundColor: isDark ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.7)',
     },
     card: {
       backgroundColor: theme.surface,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 10 },
-      shadowOpacity: isDark ? 0.5 : 0.25,
-      shadowRadius: 25,
-      elevation: 15,
+      borderColor: isDark ? 'rgba(112, 26, 211, 0.3)' : 'rgba(112, 26, 211, 0.1)',
     },
-    title: {
-      color: theme.text,
+    infoCard: {
+      backgroundColor: isDark ? 'rgba(112, 26, 211, 0.1)' : 'rgba(112, 26, 211, 0.05)',
+      borderColor: isDark ? 'rgba(112, 26, 211, 0.3)' : 'rgba(112, 26, 211, 0.2)',
     },
     label: {
-      color: theme.textSecondary,
+      color: theme.textTertiary,
     },
     value: {
-      color: theme.text,
+      color: theme.textPrimary,
+    },
+    divider: {
+      backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
     },
   });
 
@@ -153,89 +201,165 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
       visible={visible}
       animationType="none"
       onRequestClose={onClose}
+      statusBarTranslucent
     >
       <Animated.View style={[styles.overlay, dynamicStyles.overlay, { opacity: fadeAnim }]}>
+        {/* Backdrop blur effect */}
+        <TouchableOpacity
+          style={StyleSheet.absoluteFill}
+          activeOpacity={1}
+          onPress={onClose}
+        />
+
         <Animated.View
           style={[
             styles.alertContainer,
             dynamicStyles.card,
             {
-              transform: [{ scale: scaleAnim }],
+              transform: [
+                { scale: scaleAnim },
+                { translateY: slideAnim }
+              ],
             },
           ]}
         >
-          {/* Header with Icon */}
+          {/* Header with animated gradient */}
           <LinearGradient
-            colors={[BRAND_COLORS.primary, BRAND_COLORS.secondary]}
+            colors={[BRAND_COLORS.primary, BRAND_COLORS.primaryLight, BRAND_COLORS.accent]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.header}
           >
-            <View style={styles.iconContainer}>
-              <Ionicons name="notifications" size={32} color="#FFF" />
-            </View>
-            <Text style={styles.headerTitle}>New Booking Request</Text>
+            {/* Shimmer effect overlay */}
+            <Animated.View
+              style={[
+                styles.shimmer,
+                {
+                  transform: [{ translateX: shimmerTranslate }],
+                },
+              ]}
+            />
+
+            {/* Animated notification icon */}
+            <Animated.View
+              style={[
+                styles.iconContainer,
+                {
+                  transform: [{ scale: pulseAnim }],
+                },
+              ]}
+            >
+              <LinearGradient
+                colors={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.1)']}
+                style={styles.iconGradient}
+              >
+                <Ionicons name="notifications" size={36} color="#FFF" />
+              </LinearGradient>
+            </Animated.View>
+
+            <Text style={styles.headerTitle}>🎬 New Booking Request</Text>
+            <Text style={styles.headerSubtitle}>Requires your immediate attention</Text>
           </LinearGradient>
 
-          {/* Content */}
-          <View style={styles.content}>
-            {/* Customer Info */}
-            <View style={styles.infoRow}>
-              <Ionicons name="person" size={20} color={BRAND_COLORS.primary} />
-              <View style={styles.infoTextContainer}>
-                <Text style={[styles.label, dynamicStyles.label]}>Customer</Text>
-                <Text style={[styles.value, dynamicStyles.value]}>{bookingData.customer_name}</Text>
-              </View>
-            </View>
+          {/* Content with ScrollView for long content */}
+          <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            <View style={styles.content}>
+              {/* Customer Info Card */}
+              <Animated.View style={[styles.infoCard, dynamicStyles.infoCard]}>
+                <View style={styles.infoCardHeader}>
+                  <Ionicons name="person-circle" size={24} color={BRAND_COLORS.primary} />
+                  <Text style={styles.infoCardTitle}>Customer Details</Text>
+                </View>
+                <Text style={[styles.customerName, dynamicStyles.value]}>
+                  {bookingData.customer_name}
+                </Text>
+              </Animated.View>
 
-            {/* Shoot Details */}
-            <View style={styles.infoRow}>
-              <Ionicons name="camera" size={20} color={BRAND_COLORS.primary} />
-              <View style={styles.infoTextContainer}>
-                <Text style={[styles.label, dynamicStyles.label]}>Shoot Details</Text>
-                <Text style={[styles.value, dynamicStyles.value]}>{bookingData.shoot_name}</Text>
-              </View>
-            </View>
+              {/* Booking Details Grid */}
+              <View style={styles.detailsGrid}>
+                {/* Shoot Type */}
+                <View style={[styles.detailBox, dynamicStyles.infoCard]}>
+                  <View style={styles.detailIcon}>
+                    <Ionicons name="camera" size={24} color={BRAND_COLORS.primary} />
+                  </View>
+                  <Text style={[styles.detailLabel, dynamicStyles.label]}>Shoot Type</Text>
+                  <Text style={[styles.detailValue, dynamicStyles.value]} numberOfLines={2}>
+                    {bookingData.shoot_name}
+                  </Text>
+                </View>
 
-            {/* Duration */}
-            <View style={styles.infoRow}>
-              <Ionicons name="calendar" size={20} color={BRAND_COLORS.primary} />
-              <View style={styles.infoTextContainer}>
-                <Text style={[styles.label, dynamicStyles.label]}>Duration</Text>
-                <Text style={[styles.value, dynamicStyles.value]}>
-                  {bookingData.rental_days} {bookingData.rental_days === 1 ? 'day' : 'days'}
+                {/* Duration */}
+                <View style={[styles.detailBox, dynamicStyles.infoCard]}>
+                  <View style={styles.detailIcon}>
+                    <Ionicons name="calendar" size={24} color={BRAND_COLORS.primary} />
+                  </View>
+                  <Text style={[styles.detailLabel, dynamicStyles.label]}>Duration</Text>
+                  <Text style={[styles.detailValue, dynamicStyles.value]}>
+                    {bookingData.rental_days} {bookingData.rental_days === 1 ? 'Day' : 'Days'}
+                  </Text>
+                </View>
+              </View>
+
+              {/* Amount Card - Highlighted */}
+              <LinearGradient
+                colors={[
+                  isDark ? 'rgba(112, 26, 211, 0.2)' : 'rgba(112, 26, 211, 0.1)',
+                  isDark ? 'rgba(157, 78, 221, 0.2)' : 'rgba(157, 78, 221, 0.1)',
+                ]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.amountCard}
+              >
+                <View style={styles.amountHeader}>
+                  <Ionicons name="cash" size={28} color={BRAND_COLORS.primary} />
+                  <Text style={[styles.amountLabel, dynamicStyles.label]}>Total Amount</Text>
+                </View>
+                <Text style={styles.amountValue}>
+                  ₹{parseFloat(bookingData.total_amount || 0).toLocaleString('en-IN')}
+                </Text>
+                <View style={styles.amountBreakdown}>
+                  <Text style={[styles.amountNote, dynamicStyles.label]}>
+                    ₹{(parseFloat(bookingData.total_amount || 0) / (bookingData.rental_days || 1)).toLocaleString('en-IN')} per day
+                  </Text>
+                </View>
+              </LinearGradient>
+
+              {/* Divider */}
+              <View style={[styles.divider, dynamicStyles.divider]} />
+
+              {/* Info Banner */}
+              <View style={styles.infoBanner}>
+                <Ionicons name="information-circle" size={20} color={BRAND_COLORS.primary} />
+                <Text style={[styles.infoBannerText, dynamicStyles.label]}>
+                  Taking action will immediately notify the customer
                 </Text>
               </View>
             </View>
+          </ScrollView>
 
-            {/* Amount */}
-            <View style={styles.infoRow}>
-              <Ionicons name="cash" size={20} color={BRAND_COLORS.primary} />
-              <View style={styles.infoTextContainer}>
-                <Text style={[styles.label, dynamicStyles.label]}>Total Amount</Text>
-                <Text style={[styles.value, dynamicStyles.value, styles.amount]}>
-                  ₹{parseFloat(bookingData.total_amount || 0).toLocaleString()}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Action Buttons */}
-          <View style={styles.actions}>
+          {/* Action Buttons - Fixed at bottom */}
+          <View style={styles.actionsContainer}>
             <TouchableOpacity
               style={[styles.button, styles.rejectButton]}
               onPress={handleReject}
               disabled={isApproving || isRejecting}
               activeOpacity={0.8}
             >
-              {isRejecting ? (
-                <ActivityIndicator size="small" color="#FFF" />
-              ) : (
-                <>
-                  <Ionicons name="close-circle" size={20} color="#FFF" />
-                  <Text style={styles.buttonText}>Reject</Text>
-                </>
-              )}
+              <LinearGradient
+                colors={['#FF3B30', '#FF453A']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.buttonGradient}
+              >
+                {isRejecting ? (
+                  <ActivityIndicator size="small" color="#FFF" />
+                ) : (
+                  <>
+                    <Ionicons name="close-circle" size={22} color="#FFF" />
+                    <Text style={styles.buttonText}>Reject</Text>
+                  </>
+                )}
+              </LinearGradient>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -244,14 +368,21 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
               disabled={isApproving || isRejecting}
               activeOpacity={0.8}
             >
-              {isApproving ? (
-                <ActivityIndicator size="small" color="#FFF" />
-              ) : (
-                <>
-                  <Ionicons name="checkmark-circle" size={20} color="#FFF" />
-                  <Text style={styles.buttonText}>Approve</Text>
-                </>
-              )}
+              <LinearGradient
+                colors={[BRAND_COLORS.success, '#30D158']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.buttonGradient}
+              >
+                {isApproving ? (
+                  <ActivityIndicator size="small" color="#FFF" />
+                ) : (
+                  <>
+                    <Ionicons name="checkmark-circle" size={22} color="#FFF" />
+                    <Text style={styles.buttonText}>Approve</Text>
+                  </>
+                )}
+              </LinearGradient>
             </TouchableOpacity>
           </View>
 
@@ -260,8 +391,9 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
             style={styles.closeButton}
             onPress={onClose}
             disabled={isApproving || isRejecting}
+            activeOpacity={0.7}
           >
-            <Text style={styles.closeButtonText}>View Later</Text>
+            <Text style={styles.closeButtonText}>I'll Review Later</Text>
           </TouchableOpacity>
         </Animated.View>
       </Animated.View>
@@ -277,85 +409,208 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   alertContainer: {
-    width: Math.min(width - 40, 400),
-    borderRadius: 20,
+    width: Math.min(width - 40, 420),
+    maxHeight: height * 0.85,
+    borderRadius: 24,
     overflow: 'hidden',
+    borderWidth: 1,
+    shadowColor: BRAND_COLORS.primary,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
+    elevation: 20,
   },
   header: {
-    paddingVertical: 24,
-    paddingHorizontal: 20,
+    paddingVertical: 28,
+    paddingHorizontal: 24,
     alignItems: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  shimmer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: 100,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    transform: [{ skewX: '-20deg' }],
   },
   iconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: 12,
   },
+  iconGradient: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '800',
     color: '#FFF',
     textAlign: 'center',
+    letterSpacing: 0.5,
+  },
+  headerSubtitle: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.85)',
+    textAlign: 'center',
+    marginTop: 4,
+  },
+  scrollContent: {
+    maxHeight: height * 0.45,
   },
   content: {
     padding: 20,
   },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+  infoCard: {
+    padding: 16,
+    borderRadius: 16,
     marginBottom: 16,
+    borderWidth: 1,
   },
-  infoTextContainer: {
-    marginLeft: 12,
-    flex: 1,
+  infoCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 8,
   },
-  label: {
-    fontSize: 12,
-    marginBottom: 4,
+  infoCardTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: BRAND_COLORS.primary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
-  value: {
-    fontSize: 16,
+  customerName: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginTop: 4,
+  },
+  detailsGrid: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  detailBox: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  detailIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(112, 26, 211, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  detailLabel: {
+    fontSize: 11,
     fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 6,
+    textAlign: 'center',
   },
-  amount: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  detailValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  amountCard: {
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: BRAND_COLORS.primary,
+  },
+  amountHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  amountLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  amountValue: {
+    fontSize: 32,
+    fontWeight: '900',
     color: BRAND_COLORS.primary,
+    marginVertical: 4,
   },
-  actions: {
+  amountBreakdown: {
+    marginTop: 4,
+  },
+  amountNote: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  divider: {
+    height: 1,
+    marginVertical: 16,
+  },
+  infoBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    padding: 12,
+    backgroundColor: 'rgba(112, 26, 211, 0.08)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(112, 26, 211, 0.2)',
+  },
+  infoBannerText: {
+    flex: 1,
+    fontSize: 12,
+    fontWeight: '500',
+    lineHeight: 16,
+  },
+  actionsContainer: {
     flexDirection: 'row',
     paddingHorizontal: 20,
+    paddingTop: 16,
     paddingBottom: 12,
     gap: 12,
   },
   button: {
     flex: 1,
+    borderRadius: 14,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+  },
+  buttonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: 16,
     gap: 8,
-  },
-  approveButton: {
-    backgroundColor: BRAND_COLORS.success,
-  },
-  rejectButton: {
-    backgroundColor: BRAND_COLORS.error,
   },
   buttonText: {
     color: '#FFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   closeButton: {
-    paddingVertical: 12,
+    paddingVertical: 14,
     alignItems: 'center',
   },
   closeButtonText: {

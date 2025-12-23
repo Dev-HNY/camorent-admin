@@ -73,14 +73,33 @@ class NotificationService {
         return null;
       }
 
+      // Configure notification categories for action buttons (iOS and Android)
+      await Notifications.setNotificationCategoryAsync('booking_request', [
+        {
+          identifier: 'approve',
+          buttonTitle: 'Approve',
+          options: {
+            opensAppToForeground: true,
+          },
+        },
+        {
+          identifier: 'reject',
+          buttonTitle: 'Reject',
+          options: {
+            opensAppToForeground: true,
+          },
+        },
+      ]);
+
       // Configure Android notification channel BEFORE getting token
       if (Platform.OS === 'android') {
         await Notifications.setNotificationChannelAsync('booking_requests', {
-          name: 'Booking Requests',
+          name: 'Booking Requests - Critical',
+          description: 'Critical booking requests that require immediate attention',
           importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
-          lightColor: '#FF6B35',
-          sound: 'default', // Uses default system sound
+          vibrationPattern: [0, 500, 500, 500, 500, 500, 500, 500], // Longer, more persistent vibration
+          lightColor: '#701AD3', // Brand purple color
+          sound: 'notification_sound.wav', // Custom sound (will use default if file not found)
           enableLights: true,
           enableVibrate: true,
           showBadge: true,
@@ -105,6 +124,7 @@ class NotificationService {
         console.log('📱 Android notification channels configured with MAX importance');
         console.log('✅ Full-screen intent permission requested');
         console.log('✅ Bypass DND enabled for critical notifications');
+        console.log('✅ Notification categories registered with action buttons');
       }
 
       // Get the Expo push token with the EAS projectId

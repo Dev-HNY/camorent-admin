@@ -51,12 +51,12 @@
         "expo-notifications",
         {
           "icon": "./assets/icon.png",
-          "color": "#FF6B35",
+          "color": "#701AD3",
           "defaultChannel": "booking_requests",
-          "sounds": [],
+          "sounds": ["./assets/notification_sound.wav"],
           "mode": "production",
           "androidMode": "default",
-          "androidCollapsedTitle": "New Booking Request"
+          "androidCollapsedTitle": "🎬 New Booking Request"
         }
       ]
     ],
