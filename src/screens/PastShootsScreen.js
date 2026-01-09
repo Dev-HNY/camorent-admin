@@ -19,6 +19,7 @@ import PastShootCard from '../components/PastShootCard';
 import AnimatedBackground from '../components/AnimatedBackground';
 import { AnimatedCard } from '../components';
 import { getCompletedBookings } from '../services/api';
+import { responsive } from '../utils/responsive';
 
 // Mock data for past shoots with payment tracking
 const MOCK_PAST_SHOOTS = [
@@ -536,16 +537,16 @@ const styles = StyleSheet.create({
   },
   analyticsCard: {
     alignItems: 'center',
-    gap: 8,
+    gap: responsive.spacing.sm,
   },
   analyticsNumber: {
-    fontSize: 24,
+    fontSize: responsive.fontSize.xxxl,
     fontWeight: '800',
   },
   filterScroll: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    gap: 12,
+    paddingHorizontal: responsive.spacing.lg,
+    paddingVertical: responsive.spacing.lg,
+    gap: responsive.spacing.md,
   },
   scrollViewContainer: {
     flex: 1,
@@ -554,8 +555,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 16,
-    gap: 16,
+    padding: responsive.spacing.lg,
+    gap: responsive.spacing.lg,
   },
   emptyState: {
     alignItems: 'center',

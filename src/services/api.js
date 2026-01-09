@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // API Configuration
@@ -16,6 +17,37 @@ const API_BASE_URL = 'https://api.camorent.co.in';
 const TOKEN_KEY = 'admin_token';
 const USER_KEY = 'admin_user';
 
+// Secure storage wrapper functions
+const secureStorage = {
+  async setItem(key, value) {
+    try {
+      await SecureStore.setItemAsync(key, value);
+    } catch (error) {
+      // Fallback to AsyncStorage if SecureStore fails (e.g., on web)
+      console.warn('SecureStore not available, falling back to AsyncStorage');
+      await AsyncStorage.setItem(key, value);
+    }
+  },
+  async getItem(key) {
+    try {
+      return await SecureStore.getItemAsync(key);
+    } catch (error) {
+      // Fallback to AsyncStorage if SecureStore fails
+      console.warn('SecureStore not available, falling back to AsyncStorage');
+      return await AsyncStorage.getItem(key);
+    }
+  },
+  async removeItem(key) {
+    try {
+      await SecureStore.deleteItemAsync(key);
+    } catch (error) {
+      // Fallback to AsyncStorage if SecureStore fails
+      console.warn('SecureStore not available, falling back to AsyncStorage');
+      await AsyncStorage.removeItem(key);
+    }
+  },
+};
+
 // Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -29,7 +61,7 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem(TOKEN_KEY);
+    const token = await secureStorage.getItem(TOKEN_KEY);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -46,7 +78,8 @@ api.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid - clear storage
-      await AsyncStorage.multiRemove([TOKEN_KEY, USER_KEY]);
+      await secureStorage.removeItem(TOKEN_KEY);
+      await secureStorage.removeItem(USER_KEY);
     }
     return Promise.reject(error);
   }
@@ -76,9 +109,9 @@ export const adminLogin = async (phone_number, password) => {
     console.log('Response status:', response.status);
     const { id_token, user } = response.data;
 
-    // Store token and user data
-    await AsyncStorage.setItem(TOKEN_KEY, id_token);
-    await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
+    // Store token and user data securely
+    await secureStorage.setItem(TOKEN_KEY, id_token);
+    await secureStorage.setItem(USER_KEY, JSON.stringify(user));
 
     return {
       success: true,
@@ -133,7 +166,8 @@ export const adminLogin = async (phone_number, password) => {
  */
 export const adminLogout = async () => {
   try {
-    await AsyncStorage.multiRemove([TOKEN_KEY, USER_KEY]);
+    await secureStorage.removeItem(TOKEN_KEY);
+    await secureStorage.removeItem(USER_KEY);
     return { success: true };
   } catch (error) {
     console.error('Logout error:', error);
@@ -146,7 +180,7 @@ export const adminLogout = async () => {
  */
 export const getCurrentUser = async () => {
   try {
-    const userJson = await AsyncStorage.getItem(USER_KEY);
+    const userJson = await secureStorage.getItem(USER_KEY);
     if (userJson) {
       return JSON.parse(userJson);
     }
@@ -162,7 +196,7 @@ export const getCurrentUser = async () => {
  */
 export const isLoggedIn = async () => {
   try {
-    const token = await AsyncStorage.getItem(TOKEN_KEY);
+    const token = await secureStorage.getItem(TOKEN_KEY);
     return !!token;
   } catch (error) {
     return false;

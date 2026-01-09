@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Linking } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Linking, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { getTheme, BRAND_COLORS } from '../theme/colors';
 import { AnimatedButton, AnimatedAlert, UserDetailsModal } from '../components';
+import { responsive } from '../utils/responsive';
+import { shadows, modernCard } from '../theme/modernStyles';
 
 export default function ShootRequestCard({ request, onApprove, onReject }) {
   const { isDark } = useTheme();
@@ -74,15 +76,6 @@ export default function ShootRequestCard({ request, onApprove, onReject }) {
     inputRange: [0, 1],
     outputRange: [0, 200],
   });
-
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'high': return '#FF453A';
-      case 'medium': return '#FF9F0A';
-      case 'low': return '#30D158';
-      default: return '#636366';
-    }
-  };
 
   const dynamicStyles = createDynamicStyles(theme);
 
@@ -299,7 +292,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: responsive.spacing.md,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -307,16 +300,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
+    width: responsive.iconSize.xl,
+    height: responsive.iconSize.xl,
+    borderRadius: responsive.borderRadius.md,
     backgroundColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: responsive.spacing.md,
   },
   iconText: {
-    fontSize: 20,
+    fontSize: responsive.fontSize.xl,
   },
   headerInfo: {
     flex: 1,
@@ -324,33 +317,33 @@ const styles = StyleSheet.create({
   customerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: responsive.spacing.xs,
   },
   customerIcon: {
-    fontSize: 14,
+    fontSize: responsive.fontSize.md,
   },
   priorityBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
-    gap: 6,
+    paddingHorizontal: responsive.spacing.sm,
+    paddingVertical: responsive.spacing.xs,
+    borderRadius: responsive.borderRadius.sm,
+    gap: responsive.spacing.xs,
   },
   priorityDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: responsive.spacing.xs,
+    height: responsive.spacing.xs,
+    borderRadius: responsive.spacing.xs / 2,
   },
   priorityText: {
-    fontSize: 11,
+    fontSize: responsive.fontSize.xs,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   infoGrid: {
-    gap: 12,
-    marginBottom: 16,
+    gap: responsive.spacing.md,
+    marginBottom: responsive.spacing.md,
   },
   infoItemFull: {
     width: '100%',
@@ -360,19 +353,19 @@ const styles = StyleSheet.create({
   },
   detailsSection: {
     overflow: 'hidden',
-    marginBottom: 12,
+    marginBottom: responsive.spacing.md,
   },
   detailGroup: {
-    marginBottom: 16,
+    marginBottom: responsive.spacing.md,
   },
   chipContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: responsive.spacing.sm,
   },
   actionsContainer: {
     flexDirection: 'row',
-    gap: 12,
+    gap: responsive.spacing.md,
   },
   actionButton: {
     flex: 1,
@@ -386,21 +379,19 @@ const styles = StyleSheet.create({
 const createDynamicStyles = (theme) =>
   StyleSheet.create({
     card: {
-      backgroundColor: theme.surface,
-      borderRadius: 20,
-      padding: 20,
-      marginBottom: 16,
-      borderWidth: 1,
-      borderColor: theme.surfaceBorder,
+      ...modernCard(theme, 'md'),
+      borderRadius: responsive.borderRadius.xl,
+      padding: responsive.cardPadding,
+      marginBottom: responsive.spacing.md,
     },
     shootName: {
-      fontSize: 18,
+      fontSize: responsive.fontSize.xxl,
       fontWeight: '700',
       color: theme.textPrimary,
-      marginBottom: 4,
+      marginBottom: responsive.spacing.xs,
     },
     customerName: {
-      fontSize: 15,
+      fontSize: responsive.fontSize.lg,
       fontWeight: '600',
       color: BRAND_COLORS.primary,
     },
@@ -408,35 +399,36 @@ const createDynamicStyles = (theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: theme.inputBackground,
-      borderRadius: 12,
-      padding: 12,
-      gap: 12,
+      borderRadius: responsive.borderRadius.md,
+      padding: responsive.spacing.md,
+      gap: responsive.spacing.md,
       borderWidth: 1,
       borderColor: theme.inputBorder,
+      ...shadows.sm,
     },
     infoIcon: {
-      width: 36,
-      height: 36,
+      width: responsive.iconSize.lg,
+      height: responsive.iconSize.lg,
       backgroundColor: `${BRAND_COLORS.primary}15`,
-      borderRadius: 8,
+      borderRadius: responsive.borderRadius.sm,
       justifyContent: 'center',
       alignItems: 'center',
     },
     infoLabel: {
-      fontSize: 11,
+      fontSize: responsive.fontSize.xs,
       fontWeight: '600',
       color: theme.textQuaternary,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
-      marginBottom: 4,
+      marginBottom: responsive.spacing.xs,
     },
     infoValue: {
-      fontSize: 14,
+      fontSize: responsive.fontSize.md,
       fontWeight: '600',
       color: theme.textSecondary,
     },
     budgetAmount: {
-      fontSize: 18,
+      fontSize: responsive.fontSize.xxl,
       fontWeight: '800',
       color: BRAND_COLORS.success,
     },
@@ -447,51 +439,51 @@ const createDynamicStyles = (theme) =>
       backgroundColor: theme.inputBackground,
       borderWidth: 1,
       borderColor: theme.inputBorder,
-      borderRadius: 12,
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      marginBottom: 12,
-      gap: 8,
+      borderRadius: responsive.borderRadius.md,
+      paddingVertical: responsive.spacing.md,
+      paddingHorizontal: responsive.spacing.lg,
+      marginBottom: responsive.spacing.md,
+      gap: responsive.spacing.sm,
     },
     expandButtonActive: {
       backgroundColor: `${BRAND_COLORS.primary}15`,
       borderColor: BRAND_COLORS.primary,
     },
     expandButtonText: {
-      fontSize: 14,
+      fontSize: responsive.fontSize.md,
       fontWeight: '700',
       color: BRAND_COLORS.primary,
     },
     detailsContent: {
       backgroundColor: theme.inputBackground,
-      borderRadius: 12,
-      padding: 16,
+      borderRadius: responsive.borderRadius.md,
+      padding: responsive.spacing.lg,
       borderWidth: 1,
       borderColor: theme.inputBorder,
     },
     detailLabel: {
-      fontSize: 12,
+      fontSize: responsive.fontSize.sm,
       fontWeight: '700',
       color: theme.textTertiary,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
-      marginBottom: 10,
+      marginBottom: responsive.spacing.sm,
     },
     chip: {
       backgroundColor: `${BRAND_COLORS.primary}15`,
       borderWidth: 1,
       borderColor: `${BRAND_COLORS.primary}30`,
-      paddingHorizontal: 12,
-      paddingVertical: 8,
-      borderRadius: 10,
+      paddingHorizontal: responsive.spacing.md,
+      paddingVertical: responsive.spacing.sm,
+      borderRadius: responsive.borderRadius.sm,
     },
     chipText: {
-      fontSize: 13,
+      fontSize: responsive.fontSize.sm,
       fontWeight: '600',
       color: BRAND_COLORS.primary,
     },
     emptyText: {
-      fontSize: 13,
+      fontSize: responsive.fontSize.sm,
       fontWeight: '500',
       color: theme.textTertiary,
       fontStyle: 'italic',
@@ -502,28 +494,28 @@ const createDynamicStyles = (theme) =>
       backgroundColor: theme.inputBackground,
       borderWidth: 1,
       borderColor: theme.inputBorder,
-      borderRadius: 12,
-      paddingVertical: 12,
-      paddingHorizontal: 12,
-      marginBottom: 12,
-      gap: 10,
+      borderRadius: responsive.borderRadius.md,
+      paddingVertical: responsive.spacing.md,
+      paddingHorizontal: responsive.spacing.md,
+      marginBottom: responsive.spacing.md,
+      gap: responsive.spacing.sm,
     },
     contactIcon: {
-      width: 36,
-      height: 36,
+      width: responsive.iconSize.lg,
+      height: responsive.iconSize.lg,
       backgroundColor: `${BRAND_COLORS.primary}15`,
-      borderRadius: 8,
+      borderRadius: responsive.borderRadius.sm,
       justifyContent: 'center',
       alignItems: 'center',
     },
     contactText: {
       flex: 1,
-      fontSize: 14,
+      fontSize: responsive.fontSize.md,
       fontWeight: '600',
       color: theme.textSecondary,
     },
     contactNumber: {
-      fontSize: 14,
+      fontSize: responsive.fontSize.md,
       fontWeight: '700',
       color: BRAND_COLORS.primary,
     },
@@ -532,15 +524,15 @@ const createDynamicStyles = (theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: 14,
-      borderRadius: 14,
+      paddingVertical: responsive.spacing.md,
+      borderRadius: responsive.borderRadius.md,
       backgroundColor: 'rgba(255, 69, 58, 0.1)',
       borderWidth: 1,
       borderColor: 'rgba(255, 69, 58, 0.2)',
-      gap: 8,
+      gap: responsive.spacing.sm,
     },
     actionButtonSecondaryText: {
-      fontSize: 15,
+      fontSize: responsive.fontSize.md,
       fontWeight: '700',
       color: '#FF453A',
     },

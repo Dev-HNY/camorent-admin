@@ -1,14 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Modal, Dimensions, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { getTheme, BRAND_COLORS } from '../theme/colors';
-import NotificationDebugger from './NotificationDebugger';
+import { responsive } from '../utils/responsive';
+import { shadows } from '../theme/modernStyles';
 
 const { width } = Dimensions.get('window');
 
 export default function ProfileMenu() {
+  const navigation = useNavigation();
   const { isDark, toggleTheme } = useTheme();
   const { logout, user } = useAuth();
   const theme = getTheme(isDark);
@@ -20,7 +23,6 @@ export default function ProfileMenu() {
   const adminPhone = user?.phone_number || '';
   const adminEmail = user?.email || '';
   const [showMenu, setShowMenu] = useState(false);
-  const [showDebugger, setShowDebugger] = useState(false);
   const scaleAnim = useRef(new Animated.Value(0)).current;
 
   const handlePress = () => {
@@ -125,33 +127,6 @@ export default function ProfileMenu() {
 
             <View style={dynamicStyles.divider} />
 
-            {/* Test Notifications */}
-            <TouchableOpacity
-              style={dynamicStyles.menuItem}
-              onPress={() => {
-                handleClose();
-                setShowDebugger(true);
-              }}
-              activeOpacity={0.7}
-            >
-              <View style={styles.menuItemLeft}>
-                <View style={[dynamicStyles.menuIconContainer, { backgroundColor: 'rgba(255, 107, 53, 0.15)' }]}>
-                  <Ionicons
-                    name="notifications-outline"
-                    size={20}
-                    color="#FF6B35"
-                  />
-                </View>
-                <View>
-                  <Text style={dynamicStyles.menuItemText}>Test Notifications</Text>
-                  <Text style={dynamicStyles.menuItemSubtext}>
-                    Debug notification settings
-                  </Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={theme.textTertiary} />
-            </TouchableOpacity>
-
             {/* Theme Toggle */}
             <TouchableOpacity
               style={dynamicStyles.menuItem}
@@ -173,6 +148,60 @@ export default function ProfileMenu() {
                   <Text style={dynamicStyles.menuItemText}>Theme</Text>
                   <Text style={dynamicStyles.menuItemSubtext}>
                     {isDark ? 'Switch to Light' : 'Switch to Dark'}
+                  </Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={theme.textTertiary} />
+            </TouchableOpacity>
+
+            {/* Privacy Policy */}
+            <TouchableOpacity
+              style={dynamicStyles.menuItem}
+              onPress={() => {
+                handleClose();
+                navigation.navigate('PrivacyPolicy');
+              }}
+              activeOpacity={0.7}
+            >
+              <View style={styles.menuItemLeft}>
+                <View style={[dynamicStyles.menuIconContainer, { backgroundColor: 'rgba(0, 122, 255, 0.15)' }]}>
+                  <Ionicons
+                    name="shield-checkmark-outline"
+                    size={20}
+                    color="#007AFF"
+                  />
+                </View>
+                <View>
+                  <Text style={dynamicStyles.menuItemText}>Privacy Policy</Text>
+                  <Text style={dynamicStyles.menuItemSubtext}>
+                    Data protection & privacy
+                  </Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={theme.textTertiary} />
+            </TouchableOpacity>
+
+            {/* Terms & Conditions */}
+            <TouchableOpacity
+              style={dynamicStyles.menuItem}
+              onPress={() => {
+                handleClose();
+                navigation.navigate('Terms');
+              }}
+              activeOpacity={0.7}
+            >
+              <View style={styles.menuItemLeft}>
+                <View style={[dynamicStyles.menuIconContainer, { backgroundColor: 'rgba(52, 199, 89, 0.15)' }]}>
+                  <Ionicons
+                    name="document-text-outline"
+                    size={20}
+                    color="#34C759"
+                  />
+                </View>
+                <View>
+                  <Text style={dynamicStyles.menuItemText}>Terms & Conditions</Text>
+                  <Text style={dynamicStyles.menuItemSubtext}>
+                    Usage terms & policies
                   </Text>
                 </View>
               </View>
@@ -214,15 +243,6 @@ export default function ProfileMenu() {
           </Animated.View>
         </TouchableOpacity>
       </Modal>
-
-      {/* Notification Debugger Modal */}
-      <Modal
-        visible={showDebugger}
-        animationType="slide"
-        onRequestClose={() => setShowDebugger(false)}
-      >
-        <NotificationDebugger onClose={() => setShowDebugger(false)} />
-      </Modal>
     </>
   );
 }
@@ -231,37 +251,37 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginRight: 16,
+    gap: responsive.spacing.sm,
+    marginRight: responsive.spacing.lg,
   },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
-    paddingTop: 60,
-    paddingRight: 16,
+    paddingTop: responsive.spacing.xxl + responsive.spacing.md,
+    paddingRight: responsive.spacing.lg,
   },
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    marginBottom: 16,
+    gap: responsive.spacing.md,
+    marginBottom: responsive.spacing.lg,
   },
   profileInfo: {
     flex: 1,
-    gap: 4,
+    gap: responsive.spacing.xs,
   },
   profileDetail: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    marginTop: 2,
+    gap: responsive.spacing.xs,
+    marginTop: responsive.spacing.xs,
   },
   menuItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: responsive.spacing.md,
     flex: 1,
   },
 });
@@ -269,78 +289,74 @@ const styles = StyleSheet.create({
 const createDynamicStyles = (theme) =>
   StyleSheet.create({
     greetingText: {
-      fontSize: 14,
+      fontSize: responsive.fontSize.md,
       fontWeight: '600',
       color: theme.textSecondary,
     },
     menu: {
       backgroundColor: theme.surface,
-      borderRadius: 20,
-      padding: 20,
-      width: width - 32,
+      borderRadius: responsive.borderRadius.xl,
+      padding: responsive.cardPadding,
+      width: width - responsive.spacing.xl,
       maxWidth: 360,
       borderWidth: 1,
       borderColor: theme.surfaceBorder,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-      shadowRadius: 8,
-      elevation: 8,
+      ...shadows.xl,
     },
     profileIconLarge: {
-      width: 56,
-      height: 56,
-      borderRadius: 28,
+      width: responsive.iconSize.xxl + responsive.spacing.sm,
+      height: responsive.iconSize.xxl + responsive.spacing.sm,
+      borderRadius: responsive.borderRadius.xl,
       backgroundColor: BRAND_COLORS.primary,
       justifyContent: 'center',
       alignItems: 'center',
     },
     profileName: {
-      fontSize: 18,
+      fontSize: responsive.fontSize.xxl,
       fontWeight: '700',
       color: theme.textPrimary,
-      marginBottom: 4,
+      marginBottom: responsive.spacing.xs,
     },
     profileDetailText: {
-      fontSize: 13,
+      fontSize: responsive.fontSize.sm,
       fontWeight: '500',
       color: theme.textTertiary,
     },
     profileUsername: {
-      fontSize: 14,
+      fontSize: responsive.fontSize.md,
       fontWeight: '500',
       color: theme.textTertiary,
     },
     divider: {
       height: 1,
       backgroundColor: theme.surfaceBorder,
-      marginBottom: 16,
+      marginBottom: responsive.spacing.lg,
     },
     menuItem: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingVertical: 12,
-      paddingHorizontal: 12,
-      borderRadius: 12,
+      paddingVertical: responsive.spacing.md,
+      paddingHorizontal: responsive.spacing.md,
+      borderRadius: responsive.borderRadius.md,
       backgroundColor: theme.inputBackground,
-      marginBottom: 12,
+      marginBottom: responsive.spacing.md,
     },
     menuIconContainer: {
-      width: 40,
-      height: 40,
-      borderRadius: 10,
+      width: responsive.iconSize.xl,
+      height: responsive.iconSize.xl,
+      borderRadius: responsive.borderRadius.sm,
       justifyContent: 'center',
       alignItems: 'center',
     },
     menuItemText: {
-      fontSize: 15,
+      fontSize: responsive.fontSize.lg,
       fontWeight: '600',
       color: theme.textPrimary,
-      marginBottom: 2,
+      marginBottom: responsive.spacing.xs,
     },
     menuItemSubtext: {
-      fontSize: 12,
+      fontSize: responsive.fontSize.sm,
       fontWeight: '500',
       color: theme.textTertiary,
     },
@@ -348,22 +364,22 @@ const createDynamicStyles = (theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingVertical: 12,
-      paddingHorizontal: 12,
-      borderRadius: 12,
+      paddingVertical: responsive.spacing.md,
+      paddingHorizontal: responsive.spacing.md,
+      borderRadius: responsive.borderRadius.md,
       backgroundColor: theme.inputBackground,
-      marginBottom: 16,
+      marginBottom: responsive.spacing.lg,
       borderWidth: 1,
       borderColor: 'rgba(255, 69, 58, 0.2)',
     },
     closeButton: {
       backgroundColor: BRAND_COLORS.primary,
-      paddingVertical: 12,
-      borderRadius: 12,
+      paddingVertical: responsive.spacing.md,
+      borderRadius: responsive.borderRadius.md,
       alignItems: 'center',
     },
     closeButtonText: {
-      fontSize: 15,
+      fontSize: responsive.fontSize.lg,
       fontWeight: '700',
       color: '#FFFFFF',
     },

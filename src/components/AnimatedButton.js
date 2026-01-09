@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { responsive } from '../utils/responsive';
+import { shadows } from '../theme/modernStyles';
 
 const AnimatedButton = ({
   title,
@@ -129,25 +131,25 @@ const AnimatedButton = ({
   const getSizeStyles = () => {
     const sizes = {
       small: {
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        fontSize: 13,
-        iconSize: 16,
-        borderRadius: 8,
+        paddingHorizontal: responsive.spacing.md,
+        paddingVertical: responsive.spacing.sm,
+        fontSize: responsive.fontSize.sm,
+        iconSize: responsive.iconSize.sm,
+        borderRadius: responsive.borderRadius.sm,
       },
       medium: {
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        fontSize: 15,
-        iconSize: 18,
-        borderRadius: 12,
+        paddingHorizontal: responsive.spacing.lg,
+        paddingVertical: responsive.spacing.md,
+        fontSize: responsive.fontSize.md,
+        iconSize: responsive.iconSize.sm + 2,
+        borderRadius: responsive.borderRadius.md,
       },
       large: {
-        paddingHorizontal: 24,
-        paddingVertical: 14,
-        fontSize: 16,
-        iconSize: 20,
-        borderRadius: 14,
+        paddingHorizontal: responsive.spacing.xl,
+        paddingVertical: responsive.spacing.md + 2,
+        fontSize: responsive.fontSize.lg,
+        iconSize: responsive.iconSize.md,
+        borderRadius: responsive.borderRadius.md,
       },
     };
 
@@ -263,14 +265,7 @@ const AnimatedButton = ({
 
 const styles = StyleSheet.create({
   button: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    ...shadows.md,
   },
   gradient: {
     position: 'relative',
@@ -280,7 +275,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: responsive.spacing.sm,
   },
   fullWidth: {
     width: '100%',
@@ -291,10 +286,10 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   iconLeft: {
-    marginRight: 4,
+    marginRight: responsive.spacing.xs,
   },
   iconRight: {
-    marginLeft: 4,
+    marginLeft: responsive.spacing.xs,
   },
   shimmer: {
     position: 'absolute',

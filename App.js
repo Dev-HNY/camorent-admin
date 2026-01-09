@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { View, Text, ActivityIndicator } from 'react-native';
@@ -23,8 +24,15 @@ import LoginScreen from './src/screens/LoginScreen';
 import RequestsScreen from './src/screens/RequestsScreen';
 import OngoingShootsScreen from './src/screens/OngoingShootsScreen';
 import PastShootsScreen from './src/screens/PastShootsScreen';
+import PrivacyPolicyScreen from './src/screens/PrivacyPolicyScreen';
+import TermsScreen from './src/screens/TermsScreen';
+
+// Responsive utilities
+import { responsive } from './src/utils/responsive';
+import { modernTabBar } from './src/theme/modernStyles';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 const getTabBarIcon = (routeName, focused) => {
   let iconName;
@@ -49,15 +57,10 @@ function MainTabs() {
     tabBarActiveTintColor: BRAND_COLORS.primary,
     tabBarInactiveTintColor: theme.textTertiary,
     tabBarStyle: {
-      backgroundColor: theme.surface,
-      borderTopColor: theme.surfaceBorder,
-      borderTopWidth: 1,
-      height: 85,
-      paddingBottom: 25,
-      paddingTop: 10,
+      ...modernTabBar(theme),
     },
     tabBarLabelStyle: {
-      fontSize: 11,
+      fontSize: responsive.fontSize.xs,
       fontWeight: 'bold',
     },
     headerStyle: {
@@ -68,7 +71,7 @@ function MainTabs() {
     headerTintColor: theme.textPrimary,
     headerTitleStyle: {
       fontWeight: 'bold',
-      fontSize: 20,
+      fontSize: responsive.fontSize.xl,
     },
     headerRight: () => <ProfileMenu adminName={user?.first_name || 'Admin'} />,
   };
@@ -273,7 +276,11 @@ function AppContent() {
     <>
       <StatusBar style={isDark ? 'light' : 'dark'} />
       <NavigationContainer ref={navigationRef}>
-        <MainTabs />
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Main" component={MainTabs} />
+          <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+          <Stack.Screen name="Terms" component={TermsScreen} />
+        </Stack.Navigator>
       </NavigationContainer>
 
       {/* Booking Approval Alert - shown when notification received */}

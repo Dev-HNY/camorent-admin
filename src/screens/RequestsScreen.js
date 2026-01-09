@@ -19,6 +19,7 @@ import ShootRequestCard from '../components/ShootRequestCard';
 import AnimatedBackground from '../components/AnimatedBackground';
 import { AnimatedCard } from '../components';
 import { getPendingBookings, getDraftBookings, approveBooking, rejectBooking } from '../services/api';
+import { responsive } from '../utils/responsive';
 
 // Mock data for shoot requests - fallback if API fails
 const MOCK_REQUESTS = [
@@ -430,43 +431,43 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statNumber: {
-    fontSize: 32,
+    fontSize: responsive.fontSize.huge,
     fontWeight: '800',
-    marginBottom: 4,
+    marginBottom: responsive.spacing.xs,
   },
   filterContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 12,
+    paddingHorizontal: responsive.spacing.lg,
+    paddingVertical: responsive.spacing.md,
+    gap: responsive.spacing.md,
   },
   filterScroll: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    gap: 12,
+    paddingHorizontal: responsive.spacing.lg,
+    paddingVertical: responsive.spacing.lg,
+    gap: responsive.spacing.md,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 16,
-    gap: 16,
+    padding: responsive.spacing.lg,
+    gap: responsive.spacing.lg,
   },
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 80,
+    paddingVertical: responsive.spacing.xxl * 2,
   },
   loadingContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 80,
+    paddingVertical: responsive.spacing.xxl * 2,
   },
   errorContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 60,
-    paddingHorizontal: 40,
+    paddingVertical: responsive.spacing.xxl + responsive.spacing.md,
+    paddingHorizontal: responsive.spacing.xl,
   },
 });
 
@@ -478,13 +479,13 @@ const createDynamicStyles = (theme) =>
       backgroundColor: theme.gradientStart,
     },
     statsContainer: {
-      paddingVertical: 20,
-      paddingHorizontal: 20,
+      paddingVertical: responsive.spacing.lg,
+      paddingHorizontal: responsive.spacing.lg,
       borderBottomWidth: 1,
       borderBottomColor: theme.surfaceBorder,
     },
     statLabel: {
-      fontSize: 13,
+      fontSize: responsive.fontSize.sm,
       fontWeight: '600',
       color: theme.textTertiary,
       textTransform: 'uppercase',
@@ -500,20 +501,20 @@ const createDynamicStyles = (theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      paddingHorizontal: 16,
-      paddingVertical: 10,
-      borderRadius: 20,
+      paddingHorizontal: responsive.spacing.lg,
+      paddingVertical: responsive.spacing.sm,
+      borderRadius: responsive.borderRadius.round,
       backgroundColor: theme.inputBackground,
       borderWidth: 1,
       borderColor: theme.inputBorder,
-      gap: 8,
+      gap: responsive.spacing.sm,
     },
     filterButtonActive: {
       backgroundColor: BRAND_COLORS.primary,
       borderColor: BRAND_COLORS.primary,
     },
     filterButtonText: {
-      fontSize: 14,
+      fontSize: responsive.fontSize.md,
       fontWeight: '600',
       color: theme.textTertiary,
     },
@@ -521,33 +522,33 @@ const createDynamicStyles = (theme) =>
       color: '#FFFFFF',
     },
     emptyStateText: {
-      fontSize: 16,
+      fontSize: responsive.fontSize.lg,
       color: theme.textQuaternary,
       fontWeight: '500',
-      marginTop: 16,
+      marginTop: responsive.spacing.lg,
     },
     loadingText: {
-      fontSize: 16,
+      fontSize: responsive.fontSize.lg,
       color: theme.textTertiary,
       fontWeight: '500',
-      marginTop: 16,
+      marginTop: responsive.spacing.lg,
     },
     errorText: {
-      fontSize: 16,
+      fontSize: responsive.fontSize.lg,
       color: BRAND_COLORS.error,
       fontWeight: '500',
-      marginTop: 16,
+      marginTop: responsive.spacing.lg,
       textAlign: 'center',
     },
     retryButton: {
-      marginTop: 24,
-      paddingHorizontal: 32,
-      paddingVertical: 12,
+      marginTop: responsive.spacing.xl,
+      paddingHorizontal: responsive.spacing.xl,
+      paddingVertical: responsive.spacing.md,
       backgroundColor: BRAND_COLORS.primary,
-      borderRadius: 12,
+      borderRadius: responsive.borderRadius.md,
     },
     retryButtonText: {
-      fontSize: 16,
+      fontSize: responsive.fontSize.lg,
       color: '#FFFFFF',
       fontWeight: '600',
     },

@@ -19,6 +19,7 @@ import OngoingShootCard from '../components/OngoingShootCard';
 import AnimatedBackground from '../components/AnimatedBackground';
 import { AnimatedCard } from '../components';
 import { getOngoingBookings } from '../services/api';
+import { responsive } from '../utils/responsive';
 
 // Mock data for ongoing shoots - fallback if API fails
 const MOCK_ONGOING_SHOOTS = [
@@ -484,16 +485,16 @@ const styles = StyleSheet.create({
   },
   statCard: {
     alignItems: 'center',
-    gap: 8,
+    gap: responsive.spacing.sm,
   },
   statNumber: {
-    fontSize: 28,
+    fontSize: responsive.fontSize.xxxl + responsive.fontSize.xs,
     fontWeight: '800',
   },
   filterScroll: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    gap: 12,
+    paddingHorizontal: responsive.spacing.lg,
+    paddingVertical: responsive.spacing.lg,
+    gap: responsive.spacing.md,
   },
   scrollViewContainer: {
     flex: 1,
@@ -502,8 +503,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    padding: 16,
-    gap: 16,
+    padding: responsive.spacing.lg,
+    gap: responsive.spacing.lg,
   },
   emptyState: {
     alignItems: 'center',

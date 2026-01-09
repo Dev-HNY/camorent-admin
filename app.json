@@ -1,11 +1,13 @@
 {
   "expo": {
-    "name": "CAMO-Admin",
+    "name": "CAMORENT Admin",
     "slug": "camorent-admin",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon-black.png",
     "userInterfaceStyle": "dark",
+    "description": "Admin dashboard for managing camera equipment rentals, bookings, and customer interactions for CAMORENT - Camera on Rent platform.",
+    "primaryColor": "#701AD3",
     "splash": {
       "image": "./assets/icon-black.png",
       "resizeMode": "contain",
@@ -17,10 +19,13 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.camorent.admin",
+      "buildNumber": "1",
       "infoPlist": {
         "UIBackgroundModes": [
           "remote-notification"
-        ]
+        ],
+        "NSCameraUsageDescription": "This app does not access your camera.",
+        "NSPhotoLibraryUsageDescription": "This app does not access your photo library."
       }
     },
     "android": {
@@ -29,6 +34,7 @@
         "backgroundColor": "#000000"
       },
       "package": "com.camorent.admin",
+      "versionCode": 1,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
@@ -40,13 +46,16 @@
         "android.permission.ACCESS_NOTIFICATION_POLICY"
       ],
       "useNextNotificationsApi": true,
-      "allowBackup": false
+      "allowBackup": false,
+      "jsEngine": "hermes",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.camorent.admin"
     },
     "web": {
       "favicon": "./assets/icon-black.png"
     },
     "plugins": [
       "expo-font",
+      "expo-secure-store",
       [
         "expo-notifications",
         {
@@ -65,6 +74,8 @@
         "projectId": "be247bc3-bf74-4c3a-a99e-4e7e945f4e84"
       }
     },
-    "owner": "hemant-camo"
+    "owner": "hemant-camo",
+    "privacy": "unlisted",
+    "githubUrl": "https://github.com/camorent/admin-app"
   }
 }
