@@ -20,6 +20,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { getTheme, BRAND_COLORS } from '../theme/colors';
 import { approveBooking, rejectBooking, getBookingDetails } from '../services/api';
+import { formatINR } from '../utils/formatters';
 
 const { width, height } = Dimensions.get('window');
 
@@ -345,11 +346,11 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                   <Text style={[styles.amountLabel, dynamicStyles.label]}>Total Amount</Text>
                 </View>
                 <Text style={styles.amountValue}>
-                  ₹{parseFloat(bookingData.total_amount || 0).toLocaleString('en-IN')}
+                  {formatINR(parseFloat(bookingData.total_amount || 0))}
                 </Text>
                 <View style={styles.amountBreakdown}>
                   <Text style={[styles.amountNote, dynamicStyles.label]}>
-                    ₹{(parseFloat(bookingData.total_amount || 0) / (bookingData.rental_days || 1)).toLocaleString('en-IN')} per day
+                    {formatINR(parseFloat(bookingData.total_amount || 0) / (bookingData.rental_days || 1))} per day
                   </Text>
                 </View>
               </LinearGradient>

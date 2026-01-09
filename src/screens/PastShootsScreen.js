@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ import AnimatedBackground from '../components/AnimatedBackground';
 import { AnimatedCard } from '../components';
 import { getCompletedBookings } from '../services/api';
 import { responsive } from '../utils/responsive';
+import { formatINR } from '../utils/formatters';
 
 // Mock data for past shoots with payment tracking
 const MOCK_PAST_SHOOTS = [
@@ -284,7 +285,7 @@ export default function PastShootsScreen() {
   const handleViewInvoice = (shoot) => {
     Alert.alert(
       'View Invoice',
-      `Opening invoice for ${shoot.clientName}\nAmount: ₹${shoot.revenue.toLocaleString()}\nStatus: ${shoot.paymentStatus.toUpperCase()}`,
+      `Opening invoice for ${shoot.clientName}\nAmount: ${formatINR(shoot.revenue)}\nStatus: ${shoot.paymentStatus.toUpperCase()}`,
       [
         { text: 'Download PDF', onPress: () => console.log('Download PDF') },
         { text: 'Share', onPress: () => console.log('Share Invoice') },
@@ -296,7 +297,7 @@ export default function PastShootsScreen() {
   const handleSendReminder = (shoot) => {
     Alert.alert(
       'Send Payment Reminder',
-      `Send reminder to ${shoot.clientName}?\nPending Amount: ₹${shoot.revenue.toLocaleString()}`,
+      `Send reminder to ${shoot.clientName}?\nPending Amount: ${formatINR(shoot.revenue)}`,
       [
         {
           text: 'Send Email',
@@ -371,8 +372,13 @@ export default function PastShootsScreen() {
               <View style={[dynamicStyles.analyticsIconContainer, { backgroundColor: 'rgba(52, 199, 89, 0.15)' }]}>
                 <Ionicons name="cash" size={22} color={BRAND_COLORS.success} />
               </View>
-              <Text style={[styles.analyticsNumber, { color: BRAND_COLORS.success }]}>
-                ₹{(totalRevenue / 1000).toFixed(1)}k
+              <Text
+                style={[styles.analyticsNumber, { color: BRAND_COLORS.success }]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.8}
+              >
+                {formatINR(totalRevenue)}
               </Text>
               <Text style={dynamicStyles.analyticsLabel}>Total Revenue</Text>
             </Animated.View>
@@ -388,8 +394,13 @@ export default function PastShootsScreen() {
               <View style={[dynamicStyles.analyticsIconContainer, { backgroundColor: 'rgba(255, 159, 10, 0.15)' }]}>
                 <Ionicons name="alert-circle" size={22} color="#FF9F0A" />
               </View>
-              <Text style={[styles.analyticsNumber, { color: '#FF9F0A' }]}>
-                ₹{(pendingPaymentAmount / 1000).toFixed(1)}k
+              <Text
+                style={[styles.analyticsNumber, { color: '#FF9F0A' }]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.8}
+              >
+                {formatINR(pendingPaymentAmount)}
               </Text>
               <Text style={dynamicStyles.analyticsLabel}>Pending ({pendingPayments.length})</Text>
             </Animated.View>

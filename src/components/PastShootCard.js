@@ -7,7 +7,8 @@ import { getTheme, BRAND_COLORS } from '../theme/colors';
 import { viewInvoice, sendInvoiceReminder } from '../services/api';
 import { AnimatedButton, AnimatedAlert, UserDetailsModal } from '../components';
 import { responsive } from '../utils/responsive';
-import { shadows, modernCard } from '../theme/modernStyles';
+import { shadows } from '../theme/modernStyles';
+import { formatINR } from '../utils/formatters';
 
 export default function PastShootCard({ shoot }) {
   const { isDark } = useTheme();
@@ -137,11 +138,16 @@ export default function PastShootCard({ shoot }) {
             <View style={dynamicStyles.metricIconContainer}>
               <Ionicons name="cash" size={18} color={isPending ? "#FF9F0A" : BRAND_COLORS.success} />
             </View>
-            <Text style={[
-              styles.metricValue,
-              { color: isPending ? "#FF9F0A" : BRAND_COLORS.success }
-            ]}>
-              ${shoot.revenue.toLocaleString()}
+            <Text
+              style={[
+                styles.metricValue,
+                { color: isPending ? "#FF9F0A" : BRAND_COLORS.success }
+              ]}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.8}
+            >
+              {formatINR(shoot.revenue)}
             </Text>
             <Text style={dynamicStyles.metricLabel}>Revenue</Text>
           </View>
@@ -289,7 +295,7 @@ export default function PastShootCard({ shoot }) {
             onClose={() => setShowInvoiceAlert(false)}
             type="info"
             title="Invoice Details"
-            message={`Invoice Number: ${invoiceData.invoice_number}\nStatus: ${invoiceData.status.toUpperCase()}\nAmount: ₹${(invoiceData.amount / 100).toLocaleString()}\nAmount Paid: ₹${(invoiceData.amount_paid / 100).toLocaleString()}\nAmount Due: ₹${(invoiceData.amount_due / 100).toLocaleString()}${invoiceData.pdf_url ? '\n\nPDF available for download' : ''}`}
+            message={`Invoice Number: ${invoiceData.invoice_number}\nStatus: ${invoiceData.status.toUpperCase()}\nAmount: ${formatINR(invoiceData.amount, true)}\nAmount Paid: ${formatINR(invoiceData.amount_paid, true)}\nAmount Due: ${formatINR(invoiceData.amount_due, true)}${invoiceData.pdf_url ? '\n\nPDF available for download' : ''}`}
             buttons={[
               {
                 text: 'Close',

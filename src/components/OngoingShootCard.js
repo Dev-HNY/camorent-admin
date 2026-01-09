@@ -226,7 +226,7 @@ export default function OngoingShootCard({ shoot }) {
         />
       </View>
 
-      <AnimatedButton
+      {/* <AnimatedButton
         title="Mark as Complete"
         onPress={() => {}}
         variant="primary"
@@ -235,7 +235,7 @@ export default function OngoingShootCard({ shoot }) {
         iconPosition="left"
         fullWidth={true}
         animationType="shimmer"
-      />
+      /> */}
 
       {/* View Invoice Alert */}
       {invoiceData && (
