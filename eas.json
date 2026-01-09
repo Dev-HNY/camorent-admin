@@ -16,11 +16,7 @@
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
       },
-      "distribution": "internal",
-      "channel": "preview",
-      "env": {
-        "NODE_ENV": "production"
-      }
+      "distribution": "internal"
     },
     "production": {
       "android": {
@@ -29,10 +25,6 @@
       },
       "ios": {
         "credentialsSource": "remote"
-      },
-      "channel": "production",
-      "env": {
-        "NODE_ENV": "production"
       }
     },
     "production-apk": {
