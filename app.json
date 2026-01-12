@@ -75,8 +75,9 @@
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
             "buildToolsVersion": "35.0.0",
-            "enableProguardInReleaseBuilds": true,
-            "enableShrinkResourcesInReleaseBuilds": true
+            "minifyEnabled": true,
+            "shrinkResources": true,
+            "proguardFiles": ["proguard-android-optimize.txt", "proguard-rules.pro"]
           }
         }
       ]
