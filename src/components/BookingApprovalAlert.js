@@ -57,7 +57,7 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
         setFullBookingDetails(result.data);
       }
     } catch (error) {
-      console.error('Error fetching booking details:', error);
+      // Error fetching booking details
     } finally {
       setIsLoadingDetails(false);
     }

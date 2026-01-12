@@ -3,14 +3,6 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // API Configuration
-// const API_BASE_URL = 'http://localhost:8000'; // Only works in web browser (Expo Web)
-// For Android Emulator, use Android's special IP to reach host machine:
-// const API_BASE_URL = 'http://10.0.2.2:8000';
-// For iOS Simulator:
-// const API_BASE_URL = 'http://localhost:8000';
-// For testing with real device, use your machine's local IP:
-// const API_BASE_URL = 'http://192.168.1.31:8000';
-// For production:
 const API_BASE_URL = 'https://api.camorent.co.in';
 
 // Storage keys
@@ -24,7 +16,7 @@ const secureStorage = {
       await SecureStore.setItemAsync(key, value);
     } catch (error) {
       // Fallback to AsyncStorage if SecureStore fails (e.g., on web)
-      console.warn('SecureStore not available, falling back to AsyncStorage');
+      // Fallback to AsyncStorage
       await AsyncStorage.setItem(key, value);
     }
   },
@@ -33,7 +25,7 @@ const secureStorage = {
       return await SecureStore.getItemAsync(key);
     } catch (error) {
       // Fallback to AsyncStorage if SecureStore fails
-      console.warn('SecureStore not available, falling back to AsyncStorage');
+      // Fallback to AsyncStorage
       return await AsyncStorage.getItem(key);
     }
   },
@@ -42,7 +34,7 @@ const secureStorage = {
       await SecureStore.deleteItemAsync(key);
     } catch (error) {
       // Fallback to AsyncStorage if SecureStore fails
-      console.warn('SecureStore not available, falling back to AsyncStorage');
+      // Fallback to AsyncStorage
       await AsyncStorage.removeItem(key);
     }
   },
@@ -95,18 +87,11 @@ api.interceptors.response.use(
  */
 export const adminLogin = async (phone_number, password) => {
   try {
-    console.log('=== LOGIN ATTEMPT ===');
-    console.log('API URL:', `${API_BASE_URL}/admin/users/login`);
-    console.log('Phone:', phone_number);
-    console.log('Request timeout:', api.defaults.timeout);
-
     const response = await api.post('/admin/users/login', {
       phone_number,
       password,
     });
 
-    console.log('Login successful!');
-    console.log('Response status:', response.status);
     const { id_token, user } = response.data;
 
     // Store token and user data securely
@@ -118,25 +103,7 @@ export const adminLogin = async (phone_number, password) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('=== LOGIN ERROR ===');
-    console.error('Error type:', error.constructor.name);
-    console.error('Error code:', error.code);
-    console.error('Error message:', error.message);
-
-    if (error.response) {
-      // Server responded with error
-      console.error('Response status:', error.response.status);
-      console.error('Response data:', JSON.stringify(error.response.data));
-      console.error('Response headers:', error.response.headers);
-    } else if (error.request) {
-      // Request made but no response
-      console.error('No response received');
-      console.error('Request:', error.request);
-      console.error('Network Error - Check internet connection and API server status');
-    } else {
-      // Something else happened
-      console.error('Error setting up request:', error.message);
-    }
+    // Error handling for production
 
     // Determine user-friendly error message
     let userMessage = 'Login failed. Please try again.';
@@ -170,7 +137,7 @@ export const adminLogout = async () => {
     await secureStorage.removeItem(USER_KEY);
     return { success: true };
   } catch (error) {
-    console.error('Logout error:', error);
+    // Logout error
     return { success: false, error: error.message };
   }
 };
@@ -186,7 +153,7 @@ export const getCurrentUser = async () => {
     }
     return null;
   } catch (error) {
-    console.error('Get user error:', error);
+    // Error getting user
     return null;
   }
 };
@@ -222,7 +189,7 @@ export const getAllBookings = async (params = {}) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Get bookings error:', error.response?.data || error.message);
+    // Error fetching bookings
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to fetch bookings',
@@ -250,7 +217,7 @@ export const getPendingBookings = async (page = 1, limit = 50) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Get pending bookings error:', error.response?.data || error.message);
+    // Error fetching pending bookings
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to fetch pending bookings',
@@ -278,7 +245,7 @@ export const getDraftBookings = async (page = 1, limit = 50) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Get draft bookings error:', error.response?.data || error.message);
+    // Error fetching draft bookings
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to fetch draft bookings',
@@ -306,7 +273,7 @@ export const getOngoingBookings = async (page = 1, limit = 50) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Get ongoing bookings error:', error.response?.data || error.message);
+    // Error fetching ongoing bookings
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to fetch ongoing bookings',
@@ -334,7 +301,7 @@ export const getCompletedBookings = async (page = 1, limit = 50) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Get completed bookings error:', error.response?.data || error.message);
+    // Error fetching completed bookings
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to fetch completed bookings',
@@ -355,7 +322,7 @@ export const getBookingDetails = async (bookingId) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Get booking details error:', error.response?.data || error.message);
+    // Error fetching booking details
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to fetch booking details',
@@ -376,7 +343,7 @@ export const approveBooking = async (bookingId) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Approve booking error:', error.response?.data || error.message);
+    // Error approving booking
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to approve booking',
@@ -397,7 +364,7 @@ export const rejectBooking = async (bookingId) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Reject booking error:', error.response?.data || error.message);
+    // Error rejecting booking
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to reject booking',
@@ -419,7 +386,7 @@ export const updateBookingStatus = async (bookingId, status) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Update booking status error:', error.response?.data || error.message);
+    // Error updating booking status
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to update booking status',
@@ -442,7 +409,7 @@ export const viewInvoice = async (bookingId) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('View invoice error:', error.response?.data || error.message);
+    // Error viewing invoice
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to fetch invoice details',
@@ -463,7 +430,7 @@ export const sendInvoice = async (bookingId) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Send invoice error:', error.response?.data || error.message);
+    // Error sending invoice
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to send invoice',
@@ -484,7 +451,7 @@ export const sendInvoiceReminder = async (bookingId) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Send reminder error:', error.response?.data || error.message);
+    // Error sending reminder
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to send reminder',
@@ -507,7 +474,7 @@ export const getUserDetails = async (userId) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Get user details error:', error.response?.data || error.message);
+    // Error fetching user details
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to fetch user details',
@@ -532,7 +499,7 @@ export const updateDeviceToken = async (deviceToken) => {
       data: response.data,
     };
   } catch (error) {
-    console.error('Update device token error:', error.response?.data || error.message);
+    // Error updating device token
     return {
       success: false,
       error: error.response?.data?.detail?.message || 'Failed to update device token',

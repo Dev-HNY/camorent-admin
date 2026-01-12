@@ -78,4 +78,5 @@ web-build/
 # Firebase credentials (SENSITIVE - DO NOT COMMIT)
 firebase-service-account.json
 *firebase-adminsdk*.json
+play-store-service-account.json
 # google-services.json

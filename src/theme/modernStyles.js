@@ -3,7 +3,6 @@
  * Includes glassmorphism, neumorphism, and modern shadows
  */
 
-import { Platform } from 'react-native';
 import { responsive } from '../utils/responsive';
 
 /**
@@ -111,7 +110,7 @@ export const glassmorphism = (isDark, opacity = 0.1) => ({
  * Neumorphism effect (soft UI)
  */
 export const neumorphism = (isDark) => ({
-  backgroundColor: isDark ? '#1C1C1E' : '#F2F2F7',
+  backgroundColor: isDark ? '#1C1C28' : '#F2F2F7',
   shadowColor: isDark ? '#000' : '#FFF',
   shadowOffset: {
     width: -5,
@@ -134,10 +133,10 @@ export const gradients = {
   error: ['#FF453A', '#FF3B30', '#D92D20'],
   warning: ['#FF9F0A', '#FF8C00', '#FF7000'],
 
-  dark: ['#1C1C1E', '#2C2C2E', '#3A3A3C'],
+  dark: ['#0A0A0F', '#1C1C28', '#252535'],
   light: ['#FFFFFF', '#F2F2F7', '#E5E5EA'],
 
-  purpleDark: ['#1a0033', '#2d0052', '#3d006b'],
+  purpleDark: ['#2A0A4D', '#3D1566', '#4F1F7F'],
   subtle: ['rgba(112, 26, 211, 0.1)', 'rgba(139, 61, 230, 0.1)'],
 };
 
@@ -168,7 +167,7 @@ export const modernButton = {
     ...shadows.md,
   },
 
-  primary: (theme) => ({
+  primary: () => ({
     backgroundColor: '#701AD3',
     ...shadows.primary,
   }),
@@ -275,7 +274,7 @@ export const modernHeader = (theme) => ({
  */
 export const shimmerColors = (isDark) =>
   isDark
-    ? ['#1C1C1E', '#2C2C2E', '#1C1C1E']
+    ? ['#1C1C28', '#252535', '#1C1C28']
     : ['#E5E5EA', '#F2F2F7', '#E5E5EA'];
 
 /**
@@ -284,7 +283,7 @@ export const shimmerColors = (isDark) =>
 export const skeleton = (isDark, width = '100%', height = 20) => ({
   width,
   height,
-  backgroundColor: isDark ? '#2C2C2E' : '#E5E5EA',
+  backgroundColor: isDark ? '#252535' : '#E5E5EA',
   borderRadius: responsive.borderRadius.sm,
   overflow: 'hidden',
 });

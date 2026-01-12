@@ -248,7 +248,7 @@ export default function PastShootsScreen() {
         setPastShoots(MOCK_PAST_SHOOTS);
       }
     } catch (err) {
-      console.error('Error fetching past shoots:', err);
+      // Error fetching past shoots
       setError('Failed to load past shoots');
       // Use mock data as fallback
       setPastShoots(MOCK_PAST_SHOOTS);
@@ -287,8 +287,8 @@ export default function PastShootsScreen() {
       'View Invoice',
       `Opening invoice for ${shoot.clientName}\nAmount: ${formatINR(shoot.revenue)}\nStatus: ${shoot.paymentStatus.toUpperCase()}`,
       [
-        { text: 'Download PDF', onPress: () => console.log('Download PDF') },
-        { text: 'Share', onPress: () => console.log('Share Invoice') },
+        { text: 'Download PDF', onPress: () => {} },
+        { text: 'Share', onPress: () => {} },
         { text: 'Close', style: 'cancel' }
       ]
     );

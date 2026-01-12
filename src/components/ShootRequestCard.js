@@ -42,7 +42,7 @@ export default function ShootRequestCard({ request, onApprove, onReject }) {
     try {
       await onApprove(request.id);
     } catch (error) {
-      console.error('Error approving booking:', error);
+      // Error approving
     } finally {
       setIsProcessing(false);
     }
@@ -53,7 +53,7 @@ export default function ShootRequestCard({ request, onApprove, onReject }) {
     try {
       await onReject(request.id);
     } catch (error) {
-      console.error('Error rejecting booking:', error);
+      // Error rejecting
     } finally {
       setIsProcessing(false);
     }
@@ -281,7 +281,7 @@ export default function ShootRequestCard({ request, onApprove, onReject }) {
       <UserDetailsModal
         visible={showUserDetails}
         onClose={() => setShowUserDetails(false)}
-        userId={request.userId}
+        userId={request.userId || request.user_id}
       />
     </View>
   );

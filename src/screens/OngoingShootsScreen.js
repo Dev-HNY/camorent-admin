@@ -234,7 +234,7 @@ export default function OngoingShootsScreen() {
         setOngoingShoots(MOCK_ONGOING_SHOOTS);
       }
     } catch (err) {
-      console.error('Error fetching ongoing shoots:', err);
+      // Error fetching ongoing shoots
       setError('Failed to load ongoing shoots');
       // Use mock data as fallback
       setOngoingShoots(MOCK_ONGOING_SHOOTS);

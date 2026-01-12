@@ -1,9 +1,9 @@
-// Camorent Brand Colors - Black Theme
+// Camorent Brand Colors - Purple Theme
 export const BRAND_COLORS = {
-  primary: '#000000',
-  primaryLight: '#1C1C1E',
-  primaryDark: '#000000',
-  accent: '#2C2C2E',
+  primary: '#701AD3',
+  primaryLight: '#8B3DE6',
+  primaryDark: '#5A15AB',
+  accent: '#9D52ED',
   success: '#34C759',
   warning: '#FF9500',
   error: '#FF3B30',
@@ -12,15 +12,15 @@ export const BRAND_COLORS = {
 // Dark Theme
 export const DARK_THEME = {
   // Background gradients
-  gradientStart: '#000000',
-  gradientMid: '#0A0A0A',
-  gradientEnd: '#1C1C1E',
+  gradientStart: '#0A0A0F',
+  gradientMid: '#121218',
+  gradientEnd: '#1A1A24',
 
   // Surface colors
-  surface: '#1C1C1E',
-  surfaceElevated: '#2C2C2E',
-  surfaceBorder: '#3A3A3C',
-  surfaceBorderFocused: '#FFFFFF',
+  surface: '#1C1C28',
+  surfaceElevated: '#252535',
+  surfaceBorder: '#3A3A4C',
+  surfaceBorderFocused: '#701AD3',
 
   // Logo container
   logoBackground: 'rgba(255, 255, 255, 0.05)',
@@ -28,24 +28,24 @@ export const DARK_THEME = {
 
   // Text colors
   textPrimary: '#FFFFFF',
-  textSecondary: '#EBEBF5',
-  textTertiary: '#8E8E93',
-  textQuaternary: '#636366',
+  textSecondary: '#E5E5EA',
+  textTertiary: '#A0A0AB',
+  textQuaternary: '#6C6C76',
   textDisabled: '#48484A',
 
   // Input colors
-  inputBackground: '#1C1C1E',
-  inputBackgroundFocused: '#2C2C2E',
-  inputBorder: '#3A3A3C',
-  inputBorderFocused: '#FFFFFF',
-  inputIcon: '#8E8E93',
-  inputPlaceholder: '#48484A',
+  inputBackground: '#252535',
+  inputBackgroundFocused: '#2C2C3E',
+  inputBorder: '#3A3A4C',
+  inputBorderFocused: '#701AD3',
+  inputIcon: '#A0A0AB',
+  inputPlaceholder: '#6C6C76',
 
   // Button colors
-  buttonGradientEnabled: ['#000000', '#1C1C1E'],
-  buttonGradientDisabled: ['#3A3A3C', '#48484A'],
+  buttonGradientEnabled: ['#701AD3', '#8B3DE6'],
+  buttonGradientDisabled: ['#3A3A4C', '#48484A'],
   buttonText: '#FFFFFF',
-  buttonShadow: '#000000',
+  buttonShadow: '#701AD3',
 
   // Security badge
   securityBackground: 'rgba(52, 199, 89, 0.1)',
@@ -59,15 +59,15 @@ export const DARK_THEME = {
 // Light Theme
 export const LIGHT_THEME = {
   // Background gradients
-  gradientStart: '#F8F9FA',
+  gradientStart: '#FAFAFA',
   gradientMid: '#FFFFFF',
-  gradientEnd: '#F0F0F5',
+  gradientEnd: '#F5F5F7',
 
   // Surface colors
   surface: '#FFFFFF',
-  surfaceElevated: '#F8F9FA',
+  surfaceElevated: '#FAFAFA',
   surfaceBorder: '#E5E5EA',
-  surfaceBorderFocused: BRAND_COLORS.primary,
+  surfaceBorderFocused: '#701AD3',
 
   // Logo container
   logoBackground: 'rgba(0, 0, 0, 0.08)',
@@ -89,10 +89,10 @@ export const LIGHT_THEME = {
   inputPlaceholder: '#C7C7CC',
 
   // Button colors
-  buttonGradientEnabled: [BRAND_COLORS.primary, BRAND_COLORS.primaryLight],
+  buttonGradientEnabled: ['#701AD3', '#8B3DE6'],
   buttonGradientDisabled: ['#E5E5EA', '#D1D1D6'],
   buttonText: '#FFFFFF',
-  buttonShadow: BRAND_COLORS.primary,
+  buttonShadow: '#701AD3',
 
   // Security badge
   securityBackground: 'rgba(52, 199, 89, 0.08)',

@@ -4,14 +4,14 @@
     "slug": "camorent-admin",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon-black.png",
+    "icon": "./assets/icon-favicon.png",
     "userInterfaceStyle": "dark",
     "description": "Admin dashboard for managing camera equipment rentals, bookings, and customer interactions for CAMORENT - Camera on Rent platform.",
     "primaryColor": "#701AD3",
     "splash": {
       "image": "./assets/icon-black.png",
       "resizeMode": "contain",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#0A0A0F"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -31,9 +31,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-black.png",
-        "backgroundColor": "#000000"
+        "backgroundColor": "#0A0A0F"
       },
       "package": "com.camorent.admin",
+      "versionCode": 1,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
@@ -50,7 +51,7 @@
       "playStoreUrl": "https://play.google.com/store/apps/details?id=com.camorent.admin"
     },
     "web": {
-      "favicon": "./assets/icon-black.png"
+      "favicon": "./assets/icon-favicon.png"
     },
     "plugins": [
       "expo-font",
@@ -58,8 +59,8 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/icon-black.png",
-          "color": "#000000",
+          "icon": "./assets/icon-favicon.png",
+          "color": "#701AD3",
           "defaultChannel": "booking_requests",
           "sounds": ["./assets/notification_sound.wav"],
           "mode": "production",
@@ -74,7 +75,6 @@
       }
     },
     "owner": "hemant-camo",
-    "privacy": "unlisted",
-    "githubUrl": "https://github.com/camorent/admin-app"
+    "privacy": "public"
   }
 }

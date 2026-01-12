@@ -290,7 +290,7 @@ export default function OngoingShootCard({ shoot }) {
       <UserDetailsModal
         visible={showUserDetails}
         onClose={() => setShowUserDetails(false)}
-        userId={shoot.userId}
+        userId={shoot.userId || shoot.user_id}
       />
     </View>
   );

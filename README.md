@@ -8,10 +8,6 @@ A professional camera rental management mobile application for CAMORENT administ
 
 ---
 
-## 🚀 Quick Start
-
-**New to this project?** Start here: **[QUICK_START.md](QUICK_START.md)** - 5-step guide to Play Store launch!
-
 ---
 
 ## ✨ Features
@@ -120,18 +116,13 @@ camorent-admin/
 │       └── colors.js               # Dark/Light theme colors
 │
 ├── assets/
-│   ├── icon-black.png              # App icon (75KB)
-│   └── notification_sound.wav      # Custom sound (885KB)
+│   ├── icon-favicon.png            # App icon (85KB, 2500x2500)
+│   └── notification_sound.wav      # Custom sound (865KB)
 │
-└── docs/                           # Essential documentation only
-    ├── QUICK_START.md              # ⭐ START HERE
-    ├── DEPLOYMENT_GUIDE.md         # Complete deployment guide
-    ├── PLAY_STORE_LISTING.md       # Store content ready to use
-    ├── STORE_READINESS_SUMMARY.md  # Status checklist
+└── legal/
     ├── PRIVACY_POLICY.md           # Legal document
     ├── TERMS_AND_CONDITIONS.md     # Legal document
-    ├── CHANGELOG.md                # Version history
-    └── PROJECT_CLEAN.md            # Clean structure overview
+    └── PLAY_STORE_LISTING.md       # Store content ready to use
 ```
 
 ---
@@ -198,56 +189,6 @@ eas build --platform ios --profile production
 eas submit --platform ios --profile production
 ```
 
-**Full Instructions:** See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
-
----
-
-## ✅ Production Readiness
-
-### Security ✅
-- [x] SecureStore for encrypted token storage
-- [x] HTTPS-only API communication
-- [x] Android backup disabled
-- [x] Token expiration handling
-- [x] Secure credential management
-
-### Legal Compliance ✅
-- [x] Privacy Policy created and accessible
-- [x] Terms & Conditions created and accessible
-- [x] Legal screens in app navigation
-- [x] GDPR and CCPA principles followed
-
-### Performance ✅
-- [x] Hermes JavaScript engine enabled
-- [x] AAB builds for Play Store optimization
-- [x] Production build configuration
-- [x] Optimized asset loading
-
-### Store Readiness ✅
-- [x] App metadata configured
-- [x] Store descriptions written
-- [x] Build system configured
-- [ ] Store assets created (icon, graphics, screenshots)
-- [ ] Privacy Policy hosted online
-- [ ] Google Play Console setup
-
-**Status:** 95% Ready - See [STORE_READINESS_SUMMARY.md](STORE_READINESS_SUMMARY.md)
-
----
-
-## 📚 Documentation
-
-| Document | Purpose |
-|----------|---------|
-| **[QUICK_START.md](QUICK_START.md)** | ⭐ 5-step launch guide |
-| **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** | Complete deployment instructions |
-| **[PLAY_STORE_LISTING.md](PLAY_STORE_LISTING.md)** | Store content & assets |
-| **[STORE_READINESS_SUMMARY.md](STORE_READINESS_SUMMARY.md)** | Status & checklist |
-| **[PRIVACY_POLICY.md](PRIVACY_POLICY.md)** | Privacy policy |
-| **[TERMS_AND_CONDITIONS.md](TERMS_AND_CONDITIONS.md)** | Terms of service |
-| **[CHANGELOG.md](CHANGELOG.md)** | Version history |
-| **[PROJECT_CLEAN.md](PROJECT_CLEAN.md)** | Project structure |
-
 ---
 
 ## 🔐 Environment Variables
@@ -263,27 +204,6 @@ For sensitive files (keep these secure):
 
 ---
 
-## 🎯 Next Steps
-
-1. **Read the Quick Start:** [QUICK_START.md](QUICK_START.md)
-2. **Install dependencies:** `npm install`
-3. **Test the app:** Run on device/emulator
-4. **Create store assets:** Icon, feature graphic, screenshots
-5. **Host legal docs:** Upload Privacy Policy and Terms online
-6. **Build & Submit:** Follow [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
-
----
-
-## 🐛 Troubleshooting
-
-### Build Issues
-See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) - Troubleshooting section
-
-### Common Issues
-- **Module not found:** Run `npm install`
-- **Login fails:** Check API endpoint and backend status
-- **Notifications not working:** Verify `google-services.json`
-
 ---
 
 ## 📄 License
@@ -294,10 +214,8 @@ Private project for CAMORENT. All rights reserved.
 
 ## 🤝 Support
 
-- **Questions?** Read [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
-- **Store content?** See [PLAY_STORE_LISTING.md](PLAY_STORE_LISTING.md)
-- **Status check?** Review [STORE_READINESS_SUMMARY.md](STORE_READINESS_SUMMARY.md)
 - **Email:** support@camorent.co.in
+- **Legal:** [PRIVACY_POLICY.md](PRIVACY_POLICY.md) | [TERMS_AND_CONDITIONS.md](TERMS_AND_CONDITIONS.md)
 
 ---
 

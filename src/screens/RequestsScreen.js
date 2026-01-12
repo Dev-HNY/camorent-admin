@@ -183,7 +183,7 @@ export default function RequestsScreen() {
         // Transform backend data to match the card format
         const transformedBookings = bookings.map((booking) => ({
           id: booking.booking_id,
-          userId: booking.user?.user_id || booking.user_id,
+          userId: booking.user_id,
           shootName: booking.shoot_name || 'Untitled Shoot',
           customerName: booking.user_name || booking.user?.name || 'Customer',
           location: booking.user_address || 'Address not provided',
@@ -214,7 +214,7 @@ export default function RequestsScreen() {
         setPendingRequests(MOCK_REQUESTS.filter(r => r.status === 'pending'));
       }
     } catch (err) {
-      console.error('Error fetching bookings:', err);
+      // Error fetching bookings
       setError('Failed to load bookings');
       // Use mock data as fallback
       setPendingRequests(MOCK_REQUESTS.filter(r => r.status === 'pending'));
@@ -247,7 +247,7 @@ export default function RequestsScreen() {
         Alert.alert('Error', result.error || 'Failed to approve booking');
       }
     } catch (error) {
-      console.error('Error approving booking:', error);
+      // Error approving booking
       Alert.alert('Error', 'An unexpected error occurred while approving the booking');
     }
   };
@@ -268,7 +268,7 @@ export default function RequestsScreen() {
         Alert.alert('Error', result.error || 'Failed to reject booking');
       }
     } catch (error) {
-      console.error('Error rejecting booking:', error);
+      // Error rejecting booking
       Alert.alert('Error', 'An unexpected error occurred while rejecting the booking');
     }
   };

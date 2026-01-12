@@ -39,7 +39,7 @@ class NotificationService {
 
     // Check if running on physical device
     if (!Device.isDevice) {
-      console.warn('Push notifications only work on physical devices');
+      // Push notifications only work on physical devices
       return null;
     }
 
@@ -69,7 +69,7 @@ class NotificationService {
 
       // If permission denied, return null
       if (finalStatus !== 'granted') {
-        console.warn('Push notification permission denied');
+        // Permission denied
         return null;
       }
 
@@ -121,10 +121,6 @@ class NotificationService {
           bypassDnd: true,
         });
 
-        console.log('📱 Android notification channels configured with MAX importance');
-        console.log('✅ Full-screen intent permission requested');
-        console.log('✅ Bypass DND enabled for critical notifications');
-        console.log('✅ Notification categories registered with action buttons');
       }
 
       // Get the Expo push token with the EAS projectId
@@ -139,8 +135,6 @@ class NotificationService {
         projectId: projectId,
       });
       token = tokenData.data;
-      console.log('Expo Push Token:', token);
-      console.log('Project ID:', projectId);
 
       this.expoPushToken = token;
       return token;
@@ -160,13 +154,11 @@ class NotificationService {
   async sendTokenToBackend(token) {
     try {
       const result = await updateDeviceToken(token);
-      if (result.success) {
-        console.log('Device token registered with backend');
-        return true;
-      } else {
+      if (!result.success) {
         console.error('Failed to register device token:', result.error);
         return false;
       }
+      return true;
     } catch (error) {
       console.error('Error sending token to backend:', error);
       return false;
@@ -181,7 +173,6 @@ class NotificationService {
   setupNotificationListeners(onNotificationReceived, onNotificationTapped) {
     // Listener for notifications received while app is in foreground
     this.notificationListener = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received:', notification);
       if (onNotificationReceived) {
         onNotificationReceived(notification);
       }
@@ -189,7 +180,6 @@ class NotificationService {
 
     // Listener for when user taps on notification
     this.responseListener = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log('Notification tapped:', response);
       if (onNotificationTapped) {
         onNotificationTapped(response);
       }
@@ -270,7 +260,6 @@ class NotificationService {
         trigger: null, // Show immediately
       });
 
-      console.log('Test notification sent with ID:', notificationId);
       return notificationId;
     } catch (error) {
       console.error('Error sending test notification:', error);

@@ -39,6 +39,8 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
   useEffect(() => {
     if (visible && userId) {
       fetchUserDetails();
+    } else if (visible && !userId) {
+      setError('User ID is missing');
     }
   }, [visible, userId]);
 
@@ -85,12 +87,17 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
     setError(null);
     try {
       const result = await getUserDetails(userId);
+
       if (result.success) {
-        setUserDetails(result.data);
+        // Handle different API response structures
+        // API might return {data: user} or {data: {user: {...}}}
+        const userData = result.data.user || result.data;
+        setUserDetails(userData);
       } else {
         setError(result.error || 'Failed to fetch user details');
       }
     } catch (err) {
+      // Error fetching user details
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);
@@ -141,9 +148,24 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
       return null;
     }
 
-    const fullName = [userDetails.first_name, userDetails.last_name]
+    // Handle different field naming conventions
+    const firstName = userDetails.first_name || userDetails.firstName || '';
+    const lastName = userDetails.last_name || userDetails.lastName || '';
+    const fullName = [firstName, lastName]
       .filter(Boolean)
-      .join(' ') || 'N/A';
+      .join(' ') || userDetails.name || 'N/A';
+
+    const phoneNumber = userDetails.phone_number || userDetails.phoneNumber || userDetails.phone || '';
+    const email = userDetails.email || '';
+    const orgName = userDetails.org_name || userDetails.orgName || userDetails.organization || '';
+    const gstNumber = userDetails.GSTIN_no || userDetails.gstNumber || userDetails.gstin || '';
+    const panNumber = userDetails.PAN_no || userDetails.panNumber || userDetails.pan || '';
+    // Only show profession if it exists and is not a role value (customer/admin)
+    const rawProfession = userDetails.profession || '';
+    const profession = (rawProfession && rawProfession !== 'customer' && rawProfession !== 'admin') ? rawProfession : '';
+    const userType = userDetails.user_type || userDetails.userType || '';
+    const accountStatus = userDetails.account_status || userDetails.status || 'active';
+    const createdAt = userDetails.created_at || userDetails.createdAt || new Date().toISOString();
 
     return (
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -158,8 +180,8 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
             </Text>
           </LinearGradient>
           <Text style={dynamicStyles.userName}>{fullName}</Text>
-          {userDetails.profession && (
-            <Text style={dynamicStyles.userProfession}>{userDetails.profession}</Text>
+          {profession && (
+            <Text style={dynamicStyles.userProfession}>{profession}</Text>
           )}
         </View>
 
@@ -168,26 +190,28 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
           <Text style={dynamicStyles.sectionTitle}>Contact Information</Text>
 
           {/* Phone */}
-          <TouchableOpacity
-            style={dynamicStyles.infoRow}
-            onPress={() => handleCall(userDetails.phone_number)}
-            activeOpacity={0.7}
-          >
-            <View style={dynamicStyles.infoIconContainer}>
-              <Ionicons name="call" size={20} color={BRAND_COLORS.primary} />
-            </View>
-            <View style={styles.infoContent}>
-              <Text style={dynamicStyles.infoLabel}>Phone Number</Text>
-              <Text style={dynamicStyles.infoValue}>{userDetails.phone_number}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={theme.textTertiary} />
-          </TouchableOpacity>
-
-          {/* Email */}
-          {userDetails.email && (
+          {phoneNumber && (
             <TouchableOpacity
               style={dynamicStyles.infoRow}
-              onPress={() => handleEmail(userDetails.email)}
+              onPress={() => handleCall(phoneNumber)}
+              activeOpacity={0.7}
+            >
+              <View style={dynamicStyles.infoIconContainer}>
+                <Ionicons name="call" size={20} color={BRAND_COLORS.primary} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={dynamicStyles.infoLabel}>Phone Number</Text>
+                <Text style={dynamicStyles.infoValue}>{phoneNumber}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={theme.textTertiary} />
+            </TouchableOpacity>
+          )}
+
+          {/* Email */}
+          {email && (
+            <TouchableOpacity
+              style={dynamicStyles.infoRow}
+              onPress={() => handleEmail(email)}
               activeOpacity={0.7}
             >
               <View style={dynamicStyles.infoIconContainer}>
@@ -195,7 +219,7 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
               </View>
               <View style={styles.infoContent}>
                 <Text style={dynamicStyles.infoLabel}>Email</Text>
-                <Text style={dynamicStyles.infoValue}>{userDetails.email}</Text>
+                <Text style={dynamicStyles.infoValue}>{email}</Text>
               </View>
               <Ionicons name="chevron-forward" size={20} color={theme.textTertiary} />
             </TouchableOpacity>
@@ -203,25 +227,25 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
         </View>
 
         {/* Business Info Section */}
-        {(userDetails.org_name || userDetails.GSTIN_no || userDetails.PAN_no) && (
+        {(orgName || gstNumber || panNumber) && (
           <View style={styles.section}>
             <Text style={dynamicStyles.sectionTitle}>Business Information</Text>
 
             {/* Organization Name */}
-            {userDetails.org_name && (
+            {orgName && (
               <View style={dynamicStyles.infoRow}>
                 <View style={dynamicStyles.infoIconContainer}>
                   <Ionicons name="business" size={20} color={BRAND_COLORS.primary} />
                 </View>
                 <View style={styles.infoContent}>
                   <Text style={dynamicStyles.infoLabel}>Organization</Text>
-                  <Text style={dynamicStyles.infoValue}>{userDetails.org_name}</Text>
+                  <Text style={dynamicStyles.infoValue}>{orgName}</Text>
                 </View>
               </View>
             )}
 
             {/* GST Number */}
-            {userDetails.GSTIN_no && (
+            {gstNumber && (
               <View style={dynamicStyles.infoRow}>
                 <View style={dynamicStyles.infoIconContainer}>
                   <Ionicons name="document-text" size={20} color={BRAND_COLORS.primary} />
@@ -229,14 +253,14 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
                 <View style={styles.infoContent}>
                   <Text style={dynamicStyles.infoLabel}>GST Number</Text>
                   <Text style={[dynamicStyles.infoValue, styles.monoText]}>
-                    {userDetails.GSTIN_no}
+                    {gstNumber}
                   </Text>
                 </View>
               </View>
             )}
 
             {/* PAN Number */}
-            {userDetails.PAN_no && (
+            {panNumber && (
               <View style={dynamicStyles.infoRow}>
                 <View style={dynamicStyles.infoIconContainer}>
                   <Ionicons name="card" size={20} color={BRAND_COLORS.primary} />
@@ -244,7 +268,7 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
                 <View style={styles.infoContent}>
                   <Text style={dynamicStyles.infoLabel}>PAN Number</Text>
                   <Text style={[dynamicStyles.infoValue, styles.monoText]}>
-                    {userDetails.PAN_no}
+                    {panNumber}
                   </Text>
                 </View>
               </View>
@@ -257,7 +281,7 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
           <Text style={dynamicStyles.sectionTitle}>Account Details</Text>
 
           {/* User Type */}
-          {userDetails.user_type && (
+          {userType && (
             <View style={dynamicStyles.infoRow}>
               <View style={dynamicStyles.infoIconContainer}>
                 <Ionicons name="person" size={20} color={BRAND_COLORS.primary} />
@@ -265,7 +289,7 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
               <View style={styles.infoContent}>
                 <Text style={dynamicStyles.infoLabel}>User Type</Text>
                 <Text style={dynamicStyles.infoValue}>
-                  {userDetails.user_type.replace('_', ' ').toUpperCase()}
+                  {userType.replace('_', ' ').toUpperCase()}
                 </Text>
               </View>
             </View>
@@ -275,9 +299,9 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
           <View style={dynamicStyles.infoRow}>
             <View style={dynamicStyles.infoIconContainer}>
               <Ionicons
-                name={userDetails.account_status === 'active' ? 'checkmark-circle' : 'alert-circle'}
+                name={accountStatus === 'active' ? 'checkmark-circle' : 'alert-circle'}
                 size={20}
-                color={userDetails.account_status === 'active' ? BRAND_COLORS.success : '#FF9F0A'}
+                color={accountStatus === 'active' ? BRAND_COLORS.success : '#FF9F0A'}
               />
             </View>
             <View style={styles.infoContent}>
@@ -287,13 +311,13 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
                   dynamicStyles.infoValue,
                   {
                     color:
-                      userDetails.account_status === 'active'
+                      accountStatus === 'active'
                         ? BRAND_COLORS.success
                         : '#FF9F0A',
                   },
                 ]}
               >
-                {userDetails.account_status.toUpperCase()}
+                {accountStatus.toUpperCase()}
               </Text>
             </View>
           </View>
@@ -306,7 +330,7 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
             <View style={styles.infoContent}>
               <Text style={dynamicStyles.infoLabel}>Member Since</Text>
               <Text style={dynamicStyles.infoValue}>
-                {new Date(userDetails.created_at).toLocaleDateString('en-IN', {
+                {new Date(createdAt).toLocaleDateString('en-IN', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',

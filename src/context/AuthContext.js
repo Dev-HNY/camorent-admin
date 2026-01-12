@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
       }
     } catch (error) {
-      console.error('Check auth status error:', error);
+      // Error checking auth status
     } finally {
       setIsLoading(false);
     }
@@ -40,9 +40,7 @@ export const AuthProvider = ({ children }) => {
         return { success: false, error: result.error };
       }
     } catch (error) {
-      console.error('Login error in AuthContext:', error);
-      console.error('Error details:', JSON.stringify(error, null, 2));
-      // Return the actual error message instead of generic one
+      // Login error
       const errorMessage = error.message || error.toString() || 'An unexpected error occurred';
       return { success: false, error: errorMessage };
     }
@@ -55,7 +53,7 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       return { success: true };
     } catch (error) {
-      console.error('Logout error:', error);
+      // Logout error
       return { success: false, error: error.message };
     }
   };

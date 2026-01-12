@@ -341,7 +341,7 @@ export default function PastShootCard({ shoot }) {
         <UserDetailsModal
           visible={showUserDetails}
           onClose={() => setShowUserDetails(false)}
-          userId={shoot.userId}
+          userId={shoot.userId || shoot.user_id}
         />
       </LinearGradient>
     </TouchableOpacity>
