@@ -35,8 +35,6 @@
       },
       "package": "com.camorent.admin",
       "versionCode": 1,
-      "targetSdkVersion": 35,
-      "compileSdkVersion": 35,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
@@ -68,6 +66,16 @@
           "mode": "production",
           "androidMode": "default",
           "androidCollapsedTitle": "🎬 New Booking Request"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          }
         }
       ]
     ],
