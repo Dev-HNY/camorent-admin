@@ -21,10 +21,14 @@
     "production": {
       "android": {
         "buildType": "app-bundle",
-        "credentialsSource": "remote"
+        "credentialsSource": "remote",
+        "gradleCommand": ":app:bundleRelease"
       },
       "ios": {
         "credentialsSource": "remote"
+      },
+      "env": {
+        "NODE_ENV": "production"
       }
     },
     "production-apk": {

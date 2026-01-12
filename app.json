@@ -35,6 +35,8 @@
       },
       "package": "com.camorent.admin",
       "versionCode": 1,
+      "targetSdkVersion": 35,
+      "compileSdkVersion": 35,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
