@@ -40,13 +40,13 @@ jobs:
 
       - name: Decode and setup keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > camorent-upload-key.keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/camorent-upload-key.keystore
           echo "Keystore decoded successfully"
 
       - name: Verify keystore
         run: |
           echo "Checking keystore file..."
-          ls -lh camorent-upload-key.keystore
+          ls -lh android/camorent-upload-key.keystore
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
@@ -54,13 +54,13 @@ jobs:
       - name: Build Android App Bundle (AAB)
         working-directory: android
         env:
-          CAMORENT_UPLOAD_STORE_FILE: ../camorent-upload-key.keystore
+          CAMORENT_UPLOAD_STORE_FILE: camorent-upload-key.keystore
           CAMORENT_UPLOAD_KEY_ALIAS: camorent-upload
           CAMORENT_UPLOAD_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           CAMORENT_UPLOAD_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
           ./gradlew bundleRelease --no-daemon \
-            -PCAMORENT_UPLOAD_STORE_FILE=../camorent-upload-key.keystore \
+            -PCAMORENT_UPLOAD_STORE_FILE=camorent-upload-key.keystore \
             -PCAMORENT_UPLOAD_KEY_ALIAS=camorent-upload \
             -PCAMORENT_UPLOAD_STORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}" \
             -PCAMORENT_UPLOAD_KEY_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
