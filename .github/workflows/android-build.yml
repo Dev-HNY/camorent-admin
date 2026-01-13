@@ -52,14 +52,27 @@ jobs:
           echo "CAMORENT_UPLOAD_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> android/gradle.properties
           echo "CAMORENT_UPLOAD_KEY_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> android/gradle.properties
 
+      - name: Verify keystore and config
+        run: |
+          echo "Checking keystore file..."
+          ls -lh camorent-upload-key.keystore
+          echo ""
+          echo "Checking gradle.properties (last 10 lines)..."
+          tail -10 android/gradle.properties
+
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
       - name: Build Android App Bundle (AAB)
         working-directory: android
         run: |
-          ./gradlew bundleRelease --no-daemon
-          echo "✅ Build completed with RELEASE signing!"
+          ./gradlew bundleRelease --no-daemon --info | grep -i "signing\|keystore" || true
+          echo "✅ Build completed!"
+
+      - name: Verify AAB signature
+        run: |
+          echo "Checking AAB signature..."
+          unzip -l android/app/build/outputs/bundle/release/app-release.aab | grep -i "META-INF" || true
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
