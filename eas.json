@@ -26,9 +26,6 @@
       },
       "ios": {
         "credentialsSource": "remote"
-      },
-      "env": {
-        "NODE_ENV": "production"
       }
     },
     "production-apk": {
