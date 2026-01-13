@@ -156,7 +156,7 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
       .join(' ') || userDetails.name || 'N/A';
 
     const phoneNumber = userDetails.phone_number || userDetails.phoneNumber || userDetails.phone || '';
-    const email = userDetails.email || '';
+    const email = userDetails.email && userDetails.email !== 'string' ? userDetails.email : '';
     const orgName = userDetails.org_name || userDetails.orgName || userDetails.organization || '';
     const gstNumber = userDetails.GSTIN_no || userDetails.gstNumber || userDetails.gstin || '';
     const panNumber = userDetails.PAN_no || userDetails.panNumber || userDetails.pan || '';
@@ -219,7 +219,7 @@ const UserDetailsModal = ({ visible, onClose, userId }) => {
               </View>
               <View style={styles.infoContent}>
                 <Text style={dynamicStyles.infoLabel}>Email</Text>
-                <Text style={dynamicStyles.infoValue}>{email}</Text>
+                <Text style={dynamicStyles.infoValue}>{email || 'Not provided'}</Text>
               </View>
               <Ionicons name="chevron-forward" size={20} color={theme.textTertiary} />
             </TouchableOpacity>
