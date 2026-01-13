@@ -38,12 +38,28 @@ jobs:
       - name: Generate Android project
         run: npx expo prebuild --platform android --clean
 
+      - name: Decode and setup keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > camorent-upload-key.keystore
+          echo "Keystore decoded successfully"
+
+      - name: Create gradle.properties with keystore config
+        run: |
+          cat >> android/gradle.properties << EOF
+          CAMORENT_UPLOAD_STORE_FILE=../camorent-upload-key.keystore
+          CAMORENT_UPLOAD_KEY_ALIAS=camorent-upload
+          CAMORENT_UPLOAD_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
+          CAMORENT_UPLOAD_KEY_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
+          EOF
+
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
       - name: Build Android App Bundle (AAB)
         working-directory: android
-        run: ./gradlew bundleRelease --no-daemon
+        run: |
+          ./gradlew bundleRelease --no-daemon
+          echo "✅ Build completed with RELEASE signing!"
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
