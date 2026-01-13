@@ -77,7 +77,8 @@
             "buildToolsVersion": "35.0.0"
           }
         }
-      ]
+      ],
+      "./plugins/withAndroidReleaseKeystore.js"
     ],
     "extra": {
       "eas": {
