@@ -45,12 +45,12 @@ jobs:
 
       - name: Create gradle.properties with keystore config
         run: |
-          cat >> android/gradle.properties << EOF
-          CAMORENT_UPLOAD_STORE_FILE=../camorent-upload-key.keystore
-          CAMORENT_UPLOAD_KEY_ALIAS=camorent-upload
-          CAMORENT_UPLOAD_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
-          CAMORENT_UPLOAD_KEY_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
-          EOF
+          echo "" >> android/gradle.properties
+          echo "# Release keystore configuration" >> android/gradle.properties
+          echo "CAMORENT_UPLOAD_STORE_FILE=../camorent-upload-key.keystore" >> android/gradle.properties
+          echo "CAMORENT_UPLOAD_KEY_ALIAS=camorent-upload" >> android/gradle.properties
+          echo "CAMORENT_UPLOAD_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> android/gradle.properties
+          echo "CAMORENT_UPLOAD_KEY_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> android/gradle.properties
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
