@@ -43,31 +43,28 @@ jobs:
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > camorent-upload-key.keystore
           echo "Keystore decoded successfully"
 
-      - name: Create gradle.properties with keystore config
-        run: |
-          echo "" >> android/gradle.properties
-          echo "# Release keystore configuration" >> android/gradle.properties
-          echo "CAMORENT_UPLOAD_STORE_FILE=../camorent-upload-key.keystore" >> android/gradle.properties
-          echo "CAMORENT_UPLOAD_KEY_ALIAS=camorent-upload" >> android/gradle.properties
-          echo "CAMORENT_UPLOAD_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> android/gradle.properties
-          echo "CAMORENT_UPLOAD_KEY_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> android/gradle.properties
-
-      - name: Verify keystore and config
+      - name: Verify keystore
         run: |
           echo "Checking keystore file..."
           ls -lh camorent-upload-key.keystore
-          echo ""
-          echo "Checking gradle.properties (last 10 lines)..."
-          tail -10 android/gradle.properties
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
       - name: Build Android App Bundle (AAB)
         working-directory: android
+        env:
+          CAMORENT_UPLOAD_STORE_FILE: ../camorent-upload-key.keystore
+          CAMORENT_UPLOAD_KEY_ALIAS: camorent-upload
+          CAMORENT_UPLOAD_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          CAMORENT_UPLOAD_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
-          ./gradlew bundleRelease --no-daemon --info | grep -i "signing\|keystore" || true
-          echo "✅ Build completed!"
+          ./gradlew bundleRelease --no-daemon \
+            -PCAMORENT_UPLOAD_STORE_FILE=../camorent-upload-key.keystore \
+            -PCAMORENT_UPLOAD_KEY_ALIAS=camorent-upload \
+            -PCAMORENT_UPLOAD_STORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}" \
+            -PCAMORENT_UPLOAD_KEY_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
+          echo "✅ Build completed with release signing!"
 
       - name: Verify AAB signature
         run: |
