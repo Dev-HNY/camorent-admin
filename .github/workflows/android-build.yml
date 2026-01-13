@@ -53,14 +53,9 @@ jobs:
 
       - name: Build Android App Bundle (AAB)
         working-directory: android
-        env:
-          CAMORENT_UPLOAD_STORE_FILE: camorent-upload-key.keystore
-          CAMORENT_UPLOAD_KEY_ALIAS: camorent-upload
-          CAMORENT_UPLOAD_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          CAMORENT_UPLOAD_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
           ./gradlew bundleRelease --no-daemon \
-            -PCAMORENT_UPLOAD_STORE_FILE=camorent-upload-key.keystore \
+            -PCAMORENT_UPLOAD_STORE_FILE=../camorent-upload-key.keystore \
             -PCAMORENT_UPLOAD_KEY_ALIAS=camorent-upload \
             -PCAMORENT_UPLOAD_STORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}" \
             -PCAMORENT_UPLOAD_KEY_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
