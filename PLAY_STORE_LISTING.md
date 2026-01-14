@@ -8,7 +8,7 @@ This document contains all the content and assets needed for the Google Play Sto
 
 **App Name:** CAMORENT Admin
 
-**Package Name:** `com.camorent.admin`
+**Package Name:** `com.camorent.adminapp`
 
 **Category:** Business
 

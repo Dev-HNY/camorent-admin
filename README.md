@@ -158,8 +158,8 @@ const API_BASE_URL = 'https://api.camorent.co.in';
 ```
 
 ### App Identifiers
-- **Package (Android):** `com.camorent.admin`
-- **Bundle (iOS):** `com.camorent.admin`
+- **Package (Android):** `com.camorent.adminapp`
+- **Bundle (iOS):** `com.camorent.adminapp`
 - **EAS Project ID:** `be247bc3-bf74-4c3a-a99e-4e7e945f4e84`
 
 ---

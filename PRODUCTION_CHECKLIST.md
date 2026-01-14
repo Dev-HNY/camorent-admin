@@ -28,7 +28,7 @@
 - [x] app.json configured for production
 - [x] Privacy setting changed to "public"
 - [x] EAS build configuration validated
-- [x] Android package name: com.camorent.admin
+- [x] Android package name: com.camorent.adminapp
 - [x] Version: 1.0.0
 - [x] Hermes JS engine enabled
 - [x] Production AAB build configured
