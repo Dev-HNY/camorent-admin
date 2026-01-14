@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "164107265448",
-    "project_id": "camorent-admin",
-    "storage_bucket": "camorent-admin.firebasestorage.app"
+    "project_number": "698432228315",
+    "project_id": "camorent-admin-app",
+    "storage_bucket": "camorent-admin-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:164107265448:android:11966cbe26864d7b11e99d",
+        "mobilesdk_app_id": "1:698432228315:android:6772ec57ac34ee4b4e75fe",
         "android_client_info": {
-          "package_name": "com.camorent.admin"
+          "package_name": "com.camorent.adminapp"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDEVqCcFGo3M0jJhyZgF9iQdoNygIReaUM"
+          "current_key": "AIzaSyDPIh6Sab8DaKvcJl-wjQSprnOq4yBwlkI"
         }
       ],
       "services": {
