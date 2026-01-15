@@ -81,7 +81,11 @@
             "enableShrinkResourcesInReleaseBuilds": false,
             "packagingOptions": {
               "pickFirst": ["**/libc++_shared.so"]
-            }
+            },
+            "manifestQueries": {
+              "package": []
+            },
+            "newArchEnabled": false
           }
         }
       ],
