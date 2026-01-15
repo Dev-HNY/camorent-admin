@@ -1,52 +1,55 @@
-const { withAppBuildGradle, withGradleProperties } = require('@expo/config-plugins');
+const { withAppBuildGradle } = require('@expo/config-plugins');
 
 module.exports = function withAndroid16KBPageSize(config) {
-  // Add gradle properties
-  config = withGradleProperties(config, (config) => {
-    const properties = config.modResults;
-
-    // Enable 16KB page size support
-    properties.push({
-      type: 'property',
-      key: 'android.bundle.enableUncompressedNativeLibs',
-      value: 'false',
-    });
-
-    return config;
-  });
-
-  // Add build.gradle configuration
-  config = withAppBuildGradle(config, (config) => {
+  return withAppBuildGradle(config, (config) => {
     if (config.modResults.language === 'groovy') {
       let buildGradle = config.modResults.contents;
 
-      // Check if 16KB config already exists
-      if (buildGradle.includes('splits {')) {
+      // Check if already configured
+      if (buildGradle.includes('useLegacyPackaging')) {
         return config;
       }
 
-      // Add splits configuration for 16KB page size support
-      const splitsConfig = `
-    splits {
-        abi {
-            enable true
-            reset()
-            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            universalApk false
+      // Find the existing packagingOptions block and modify it
+      const packagingOptionsRegex = /packagingOptions\s*\{([^}]*)\}/s;
+
+      if (packagingOptionsRegex.test(buildGradle)) {
+        // Modify existing packagingOptions
+        buildGradle = buildGradle.replace(
+          packagingOptionsRegex,
+          (match, content) => {
+            if (content.includes('jniLibs')) {
+              // Already has jniLibs, add useLegacyPackaging
+              return match.replace(
+                /(jniLibs\s*\{)/,
+                '$1\n            useLegacyPackaging true\n'
+              );
+            } else {
+              // Add jniLibs block
+              return match.replace(
+                /packagingOptions\s*\{/,
+                `packagingOptions {\n        jniLibs {\n            useLegacyPackaging true\n        }`
+              );
+            }
+          }
+        );
+      } else {
+        // No packagingOptions, add it before buildTypes
+        const packagingBlock = `
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
         }
     }
 `;
-
-      // Insert before buildTypes
-      buildGradle = buildGradle.replace(
-        /(\s+buildTypes\s*\{)/,
-        `${splitsConfig}\n$1`
-      );
+        buildGradle = buildGradle.replace(
+          /(\s+buildTypes\s*\{)/,
+          `${packagingBlock}\n$1`
+        );
+      }
 
       config.modResults.contents = buildGradle;
     }
     return config;
   });
-
-  return config;
 };

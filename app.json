@@ -34,7 +34,7 @@
         "backgroundColor": "#0A0A0F"
       },
       "package": "com.camorent.adminapp",
-      "versionCode": 3,
+      "versionCode": 4,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
@@ -75,13 +75,8 @@
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
             "buildToolsVersion": "35.0.0",
-            "extraProguardRules": "-keep class ** { *; }",
-            "useLegacyPackaging": false,
             "enableProguardInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": false,
-            "packagingOptions": {
-              "pickFirst": ["**/libc++_shared.so"]
-            },
             "newArchEnabled": false
           }
         }
