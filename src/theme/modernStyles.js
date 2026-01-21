@@ -246,17 +246,23 @@ export const modernBadge = (color, size = 'md') => {
 };
 
 /**
- * Modern tab bar styles
+ * Modern tab bar styles - Apple/Airbnb level polish
  */
 export const modernTabBar = (theme) => ({
   backgroundColor: theme.surface,
   borderTopWidth: 0,
-  height: responsive.tabBarHeight,
-  paddingBottom: responsive.spacing.sm,
-  paddingTop: responsive.spacing.sm,
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
   ...shadows.xl,
   borderTopLeftRadius: responsive.borderRadius.xl,
   borderTopRightRadius: responsive.borderRadius.xl,
+  // Add subtle gradient border on top
+  borderTopColor: theme.surfaceBorder,
+  borderTopWidth: 1,
+  // Ensure smooth animations
+  transition: 'all 0.3s ease',
 });
 
 /**

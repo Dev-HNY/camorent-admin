@@ -4,7 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator, Platform } from 'react-native';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import 'react-native-gesture-handler';
 
 // Context
@@ -52,26 +53,43 @@ function MainTabs() {
   const { isDark } = useTheme();
   const { user } = useAuth();
   const theme = getTheme(isDark);
+  const insets = useSafeAreaInsets();
+
+  // Calculate tab bar height with safe area
+  const tabBarHeight = Platform.OS === 'android'
+    ? responsive.tabBarHeight + Math.max(insets.bottom, 8) // Add bottom inset or minimum padding
+    : responsive.tabBarHeight + insets.bottom;
 
   const screenOptions = {
     tabBarActiveTintColor: BRAND_COLORS.primary,
     tabBarInactiveTintColor: theme.textTertiary,
     tabBarStyle: {
       ...modernTabBar(theme),
+      height: tabBarHeight,
+      paddingBottom: Platform.OS === 'android'
+        ? Math.max(insets.bottom - 4, 8) // Respect system navigation, minimum 8px
+        : insets.bottom,
+      paddingTop: responsive.spacing.sm,
     },
     tabBarLabelStyle: {
       fontSize: responsive.fontSize.xs,
-      fontWeight: 'bold',
+      fontWeight: '600',
+      marginBottom: Platform.OS === 'android' ? 4 : 0,
+    },
+    tabBarIconStyle: {
+      marginTop: 4,
     },
     headerStyle: {
       backgroundColor: theme.surface,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.surfaceBorder,
+      borderBottomWidth: 0,
+      elevation: 0,
+      shadowOpacity: 0,
     },
     headerTintColor: theme.textPrimary,
     headerTitleStyle: {
-      fontWeight: 'bold',
+      fontWeight: '700',
       fontSize: responsive.fontSize.xl,
+      letterSpacing: -0.5,
     },
     headerRight: () => <ProfileMenu adminName={user?.first_name || 'Admin'} />,
   };
@@ -82,7 +100,13 @@ function MainTabs() {
         ...screenOptions,
         tabBarIcon: ({ focused, color, size }) => {
           const iconName = getTabBarIcon(route.name, focused);
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return (
+            <Ionicons
+              name={iconName}
+              size={focused ? size + 2 : size}
+              color={color}
+            />
+          );
         },
       })}
     >
@@ -139,12 +163,9 @@ function AppContent() {
       if (token) {
         // Send token to backend
         await NotificationService.sendTokenToBackend(token);
-        console.log('Push notifications registered successfully');
-      } else {
-        console.warn('Failed to get push token');
       }
     } catch (error) {
-      console.error('Error registering push notifications:', error);
+      // Silent error handling in production
     }
   };
 
@@ -244,8 +265,7 @@ function AppContent() {
   };
 
   const handleActionComplete = (action) => {
-    console.log(`Booking ${action}`);
-    // Optionally refresh the requests screen
+    // Refresh the requests screen after action
     if (navigationRef.current) {
       navigationRef.current.navigate('Requests');
     }
@@ -256,7 +276,7 @@ function AppContent() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' }}>
         <ActivityIndicator size="large" color={BRAND_COLORS.primary} />
-        <Text style={{ color: '#fff', marginTop: 16 }}>Loading...</Text>
+        <Text style={{ color: '#fff', marginTop: 16, fontWeight: '600' }}>Loading...</Text>
       </View>
     );
   }
@@ -274,7 +294,7 @@ function AppContent() {
   // Show main app if authenticated
   return (
     <>
-      <StatusBar style={isDark ? 'light' : 'dark'} />
+      <StatusBar style={isDark ? 'light' : 'dark'} translucent backgroundColor="transparent" />
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Main" component={MainTabs} />
@@ -296,10 +316,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <AppContent />
-      </ThemeProvider>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <ThemeProvider>
+          <AppContent />
+        </ThemeProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
