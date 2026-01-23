@@ -1,4 +1,4 @@
-const { withAppBuildGradle, withAndroidManifest } = require('@expo/config-plugins');
+const { withAppBuildGradle, withAndroidManifest, withGradleProperties } = require('@expo/config-plugins');
 
 module.exports = function withAndroid16KBPageSize(config) {
   // Add manifest property for 16KB page size support
@@ -28,6 +28,43 @@ module.exports = function withAndroid16KBPageSize(config) {
           }
         });
       }
+    }
+
+    return config;
+  });
+
+  // Add gradle.properties configuration
+  config = withGradleProperties(config, (config) => {
+    const properties = config.modResults;
+    
+    // Ensure useLegacyPackaging is false
+    const legacyPackagingIndex = properties.findIndex(
+      item => item.type === 'property' && item.key === 'expo.useLegacyPackaging'
+    );
+    
+    if (legacyPackagingIndex >= 0) {
+      properties[legacyPackagingIndex].value = 'false';
+    } else {
+      properties.push({
+        type: 'property',
+        key: 'expo.useLegacyPackaging',
+        value: 'false',
+      });
+    }
+
+    // Add support for 16KB pages in Gradle
+    const supports16KBIndex = properties.findIndex(
+      item => item.type === 'property' && item.key === 'android.bundle.enableUncompressedNativeLibs'
+    );
+    
+    if (supports16KBIndex >= 0) {
+      properties[supports16KBIndex].value = 'true';
+    } else {
+      properties.push({
+        type: 'property',
+        key: 'android.bundle.enableUncompressedNativeLibs',
+        value: 'true',
+      });
     }
 
     return config;
