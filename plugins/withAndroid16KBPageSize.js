@@ -1,7 +1,28 @@
-const { withAppBuildGradle } = require('@expo/config-plugins');
+const { withAppBuildGradle, withAndroidManifest } = require('@expo/config-plugins');
 
 module.exports = function withAndroid16KBPageSize(config) {
-  return withAppBuildGradle(config, (config) => {
+  // Add manifest property for 16KB page size support
+  config = withAndroidManifest(config, (config) => {
+    const androidManifest = config.modResults.manifest;
+
+    // Add property to application tag
+    if (androidManifest.application && androidManifest.application[0]) {
+      const app = androidManifest.application[0];
+
+      // Add 16KB page size support property
+      if (!app.$) {
+        app.$ = {};
+      }
+
+      // This property declares support for 16KB page sizes
+      app.$['android:allowNativeHeapPointerTagging'] = 'false';
+    }
+
+    return config;
+  });
+
+  // Configure packaging options for 16KB support
+  config = withAppBuildGradle(config, (config) => {
     if (config.modResults.language === 'groovy') {
       let buildGradle = config.modResults.contents;
 
@@ -19,16 +40,16 @@ module.exports = function withAndroid16KBPageSize(config) {
           packagingOptionsRegex,
           (match, content) => {
             if (content.includes('jniLibs')) {
-              // Already has jniLibs, add useLegacyPackaging
+              // Already has jniLibs, ensure useLegacyPackaging is false
               return match.replace(
                 /(jniLibs\s*\{)/,
-                '$1\n            useLegacyPackaging true\n'
+                '$1\n            useLegacyPackaging false\n'
               );
             } else {
-              // Add jniLibs block
+              // Add jniLibs block with useLegacyPackaging false
               return match.replace(
                 /packagingOptions\s*\{/,
-                `packagingOptions {\n        jniLibs {\n            useLegacyPackaging true\n        }`
+                `packagingOptions {\n        jniLibs {\n            useLegacyPackaging false\n        }`
               );
             }
           }
@@ -38,7 +59,7 @@ module.exports = function withAndroid16KBPageSize(config) {
         const packagingBlock = `
     packagingOptions {
         jniLibs {
-            useLegacyPackaging true
+            useLegacyPackaging false
         }
     }
 `;
@@ -52,4 +73,6 @@ module.exports = function withAndroid16KBPageSize(config) {
     }
     return config;
   });
+
+  return config;
 };
