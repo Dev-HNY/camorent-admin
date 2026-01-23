@@ -5,17 +5,29 @@ module.exports = function withAndroid16KBPageSize(config) {
   config = withAndroidManifest(config, (config) => {
     const androidManifest = config.modResults.manifest;
 
-    // Add property to application tag
+    // Add property to application tag for 16KB page size support
     if (androidManifest.application && androidManifest.application[0]) {
       const app = androidManifest.application[0];
 
-      // Add 16KB page size support property
-      if (!app.$) {
-        app.$ = {};
+      // Initialize property array if it doesn't exist
+      if (!app.property) {
+        app.property = [];
       }
 
-      // This property declares support for 16KB page sizes
-      app.$['android:allowNativeHeapPointerTagging'] = 'false';
+      // Check if the property already exists
+      const propertyExists = app.property.some(
+        prop => prop.$?.['android:name'] === 'android.app.16kb_page_size'
+      );
+
+      if (!propertyExists) {
+        // Add the 16KB page size support property
+        app.property.push({
+          $: {
+            'android:name': 'android.app.16kb_page_size',
+            'android:value': 'true'
+          }
+        });
+      }
     }
 
     return config;

@@ -34,7 +34,7 @@
         "backgroundColor": "#0A0A0F"
       },
       "package": "com.camorent.adminapp",
-      "versionCode": 7,
+      "versionCode": 8,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
