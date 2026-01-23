@@ -56,7 +56,6 @@
     "plugins": [
       "expo-font",
       "expo-secure-store",
-      "react-native-safe-area-context",
       [
         "expo-notifications",
         {
