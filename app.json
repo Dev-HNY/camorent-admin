@@ -20,13 +20,17 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.camorent.adminapp",
       "buildNumber": "1",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "UIBackgroundModes": [
+          "remote-notification",
           "remote-notification"
         ],
         "NSCameraUsageDescription": "This app does not access your camera.",
-        "NSPhotoLibraryUsageDescription": "This app does not access your photo library."
-      }
+        "NSPhotoLibraryUsageDescription": "This app does not access your photo library.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "appStoreUrl": "https://apps.apple.com/app/id6758651394"
     },
     "android": {
       "adaptiveIcon": {
@@ -62,7 +66,9 @@
           "icon": "./assets/icon-favicon.png",
           "color": "#701AD3",
           "defaultChannel": "booking_requests",
-          "sounds": ["./assets/notification_sound.wav"],
+          "sounds": [
+            "./assets/notification_sound.wav"
+          ],
           "mode": "production",
           "androidMode": "default",
           "androidCollapsedTitle": "🎬 New Booking Request"
@@ -77,7 +83,11 @@
             "buildToolsVersion": "35.0.0",
             "enableProguardInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": false,
-            "newArchEnabled": false
+            "newArchEnabled": false,
+            "enableMinifyInReleaseBuilds": true
+          },
+          "ios": {
+            "deploymentTarget": "15.1"
           }
         }
       ],
