@@ -49,6 +49,12 @@ export default function PastShootCard({ shoot }) {
     }
   };
 
+  const handleOpenPDF = () => {
+    if (invoiceData?.pdf_url) {
+      Linking.openURL(invoiceData.pdf_url);
+    }
+  };
+
   const handleSendReminder = () => {
     setShowReminderAlert(true);
   };
@@ -294,8 +300,8 @@ export default function PastShootCard({ shoot }) {
             visible={showInvoiceAlert}
             onClose={() => setShowInvoiceAlert(false)}
             type="info"
-            title="Invoice Details"
-            message={`Invoice Number: ${invoiceData.invoice_number}\nStatus: ${invoiceData.status.toUpperCase()}\nAmount: ${formatINR(invoiceData.amount, true)}\nAmount Paid: ${formatINR(invoiceData.amount_paid, true)}\nAmount Due: ${formatINR(invoiceData.amount_due, true)}${invoiceData.pdf_url ? '\n\nPDF available for download' : ''}`}
+            title="Admin Invoice"
+            message={`Invoice Number: ${invoiceData.invoice_number || 'N/A'}\nInvoice ID: ${invoiceData.invoice_id || 'N/A'}\n\n${invoiceData.message || 'Admin copy generated successfully'}\n\nThis is a payment-free admin copy for reference only.`}
             buttons={[
               {
                 text: 'Close',
@@ -303,14 +309,9 @@ export default function PastShootCard({ shoot }) {
                 onPress: () => {},
               },
               invoiceData.pdf_url && {
-                text: 'Open PDF',
+                text: 'View PDF',
                 style: 'primary',
-                onPress: () => Linking.openURL(invoiceData.pdf_url),
-              },
-              invoiceData.short_url && {
-                text: 'Payment Link',
-                style: 'default',
-                onPress: () => Linking.openURL(invoiceData.short_url),
+                onPress: handleOpenPDF,
               },
             ].filter(Boolean)}
           />

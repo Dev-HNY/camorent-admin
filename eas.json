@@ -25,7 +25,9 @@
         "gradleCommand": ":app:bundleRelease"
       },
       "ios": {
-        "credentialsSource": "remote"
+        "credentialsSource": "remote",
+        "image": "latest",
+        "node": "20.18.1"
       }
     },
     "production-apk": {
