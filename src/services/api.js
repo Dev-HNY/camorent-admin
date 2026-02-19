@@ -8,6 +8,23 @@ const API_BASE_URL = 'https://api.camorent.co.in';
 // Storage keys
 const TOKEN_KEY = 'admin_token';
 const USER_KEY = 'admin_user';
+const REFRESH_TOKEN_KEY = 'admin_refresh_token';
+const PHONE_NUMBER_KEY = 'admin_phone_number';
+
+// Module-level force logout callback — set by AuthContext
+let _forceLogoutCallback = null;
+export const setForceLogoutCallback = (callback) => {
+  _forceLogoutCallback = callback;
+};
+const triggerForceLogout = () => {
+  if (_forceLogoutCallback) {
+    _forceLogoutCallback();
+  }
+};
+
+// Track if a refresh is already in-flight to prevent duplicate calls
+let isRefreshing = false;
+let refreshPromise = null;
 
 // Secure storage wrapper functions
 const secureStorage = {
@@ -64,15 +81,72 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor for error handling
+// Response interceptor — auto-refresh token on 401, force logout if refresh fails
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid - clear storage
-      await secureStorage.removeItem(TOKEN_KEY);
-      await secureStorage.removeItem(USER_KEY);
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      // Attempt token refresh (deduplicated)
+      if (!isRefreshing) {
+        isRefreshing = true;
+        refreshPromise = (async () => {
+          try {
+            const refreshToken = await secureStorage.getItem(REFRESH_TOKEN_KEY);
+            const phoneNumber = await secureStorage.getItem(PHONE_NUMBER_KEY);
+
+            if (!refreshToken || !phoneNumber) {
+              await secureStorage.removeItem(TOKEN_KEY);
+              await secureStorage.removeItem(USER_KEY);
+              triggerForceLogout();
+              return false;
+            }
+
+            const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ refresh_token: refreshToken, phone_number: phoneNumber }),
+            });
+
+            if (!response.ok) {
+              await secureStorage.removeItem(TOKEN_KEY);
+              await secureStorage.removeItem(USER_KEY);
+              await secureStorage.removeItem(REFRESH_TOKEN_KEY);
+              await secureStorage.removeItem(PHONE_NUMBER_KEY);
+              triggerForceLogout();
+              return false;
+            }
+
+            const data = await response.json();
+            if (data.id_token) {
+              await secureStorage.setItem(TOKEN_KEY, data.id_token);
+              return data.id_token;
+            }
+
+            triggerForceLogout();
+            return false;
+          } catch {
+            await secureStorage.removeItem(TOKEN_KEY);
+            await secureStorage.removeItem(USER_KEY);
+            triggerForceLogout();
+            return false;
+          } finally {
+            isRefreshing = false;
+            refreshPromise = null;
+          }
+        })();
+      }
+
+      const newToken = await refreshPromise;
+      if (newToken) {
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return api(originalRequest);
+      }
     }
+
     return Promise.reject(error);
   }
 );
@@ -92,11 +166,15 @@ export const adminLogin = async (phone_number, password) => {
       password,
     });
 
-    const { id_token, user } = response.data;
+    const { id_token, refresh_token, user } = response.data;
 
-    // Store token and user data securely
+    // Store token, refresh token, phone number, and user data securely
     await secureStorage.setItem(TOKEN_KEY, id_token);
     await secureStorage.setItem(USER_KEY, JSON.stringify(user));
+    if (refresh_token) {
+      await secureStorage.setItem(REFRESH_TOKEN_KEY, refresh_token);
+    }
+    await secureStorage.setItem(PHONE_NUMBER_KEY, phone_number);
 
     return {
       success: true,
@@ -135,6 +213,8 @@ export const adminLogout = async () => {
   try {
     await secureStorage.removeItem(TOKEN_KEY);
     await secureStorage.removeItem(USER_KEY);
+    await secureStorage.removeItem(REFRESH_TOKEN_KEY);
+    await secureStorage.removeItem(PHONE_NUMBER_KEY);
     return { success: true };
   } catch (error) {
     // Logout error

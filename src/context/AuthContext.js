@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { adminLogin, adminLogout, getCurrentUser, isLoggedIn } from '../services/api';
+import { adminLogin, adminLogout, getCurrentUser, isLoggedIn, setForceLogoutCallback } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -57,6 +57,16 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: error.message };
     }
   };
+
+  // Register force-logout callback so the API interceptor can trigger logout
+  // when token refresh fails (called from outside React component tree)
+  useEffect(() => {
+    setForceLogoutCallback(() => {
+      setUser(null);
+      setIsAuthenticated(false);
+    });
+    return () => setForceLogoutCallback(null);
+  }, []);
 
   const value = {
     user,
