@@ -49,7 +49,6 @@
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.ACCESS_NOTIFICATION_POLICY"
       ],
-      "useNextNotificationsApi": true,
       "allowBackup": false,
       "jsEngine": "hermes",
       "playStoreUrl": "https://play.google.com/store/apps/details?id=com.camorent.adminapp"
@@ -92,14 +91,14 @@
           }
         }
       ],
-      "./plugins/withAndroidReleaseKeystore.js"
+      "./plugins/withAndroidReleaseKeystore.js",
+      "expo-asset"
     ],
     "extra": {
       "eas": {
         "projectId": "be247bc3-bf74-4c3a-a99e-4e7e945f4e84"
       }
     },
-    "owner": "hemant-camo",
-    "privacy": "public"
+    "owner": "hemant-camo"
   }
 }
