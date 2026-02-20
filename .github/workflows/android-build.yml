@@ -48,6 +48,17 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
+      - name: Patch expo-modules-core for 16KB page size support
+        run: |
+          CMAKE_FILE="node_modules/expo-modules-core/android/CMakeLists.txt"
+          if grep -q "max-page-size" "$CMAKE_FILE"; then
+            echo "Already patched"
+          else
+            # Append 16KB linker flag after cmake_minimum_required line
+            sed -i '/^cmake_minimum_required/a set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,max-page-size=16384")' "$CMAKE_FILE"
+            echo "Patched: $(head -5 $CMAKE_FILE)"
+          fi
+
       - name: Build Android App Bundle (AAB)
         working-directory: android
         run: |
