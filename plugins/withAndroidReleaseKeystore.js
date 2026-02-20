@@ -1,7 +1,19 @@
-const { withAppBuildGradle } = require('@expo/config-plugins');
+const { withAppBuildGradle, withProjectBuildGradle } = require('@expo/config-plugins');
 
 module.exports = function withAndroidReleaseKeystore(config) {
-  return withAppBuildGradle(config, (config) => {
+  // Set NDK version to 27 for 16KB page size support
+  config = withProjectBuildGradle(config, (config) => {
+    if (config.modResults.language === 'groovy') {
+      config.modResults.contents = config.modResults.contents.replace(
+        /ndkVersion\s*=\s*"[^"]+"/,
+        'ndkVersion = "27.0.12077973"'
+      );
+    }
+    return config;
+  });
+
+  // Inject release signing config
+  config = withAppBuildGradle(config, (config) => {
     if (config.modResults.language === 'groovy') {
       let buildGradle = config.modResults.contents;
 
@@ -38,4 +50,6 @@ module.exports = function withAndroidReleaseKeystore(config) {
     }
     return config;
   });
+
+  return config;
 };

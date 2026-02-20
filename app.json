@@ -38,7 +38,7 @@
         "backgroundColor": "#0A0A0F"
       },
       "package": "com.camorent.adminapp",
-      "versionCode": 11,
+      "versionCode": 12,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
@@ -81,6 +81,7 @@
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
             "buildToolsVersion": "35.0.0",
+            "ndkVersion": "27.0.12077973",
             "enableProguardInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": false,
             "newArchEnabled": false,
@@ -91,8 +92,7 @@
           }
         }
       ],
-      "./plugins/withAndroidReleaseKeystore.js",
-      "./plugins/withAndroid16KBPageSize.js"
+      "./plugins/withAndroidReleaseKeystore.js"
     ],
     "extra": {
       "eas": {
