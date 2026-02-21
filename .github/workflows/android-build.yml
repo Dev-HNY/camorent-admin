@@ -35,29 +35,31 @@ jobs:
       - name: Generate Android project
         run: npx expo prebuild --platform android --clean
 
-      - name: Decode and setup keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/camorent-upload-key.keystore
-          echo "Keystore decoded successfully"
-
-      - name: Verify keystore
-        run: |
-          echo "Checking keystore file..."
-          ls -lh android/camorent-upload-key.keystore
-
-      - name: Make gradlew executable
-        run: chmod +x android/gradlew
-
       - name: Patch expo-modules-core for 16KB page size support
         run: |
           CMAKE_FILE="node_modules/expo-modules-core/android/CMakeLists.txt"
           if grep -q "max-page-size" "$CMAKE_FILE"; then
             echo "Already patched"
           else
-            # Append 16KB linker flag after cmake_minimum_required line
-            sed -i '/^cmake_minimum_required/a set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,max-page-size=16384")' "$CMAKE_FILE"
-            echo "Patched: $(head -5 $CMAKE_FILE)"
+            # Append target_link_options at end of file so it applies after add_library
+            cat >> "$CMAKE_FILE" << 'CMAKE_EOF'
+
+# 16KB page size support (Android 15+ requirement)
+if(ANDROID)
+  target_link_options(${PACKAGE_NAME} PRIVATE "-Wl,-z,max-page-size=16384")
+endif()
+CMAKE_EOF
+            echo "✅ Patched expo-modules-core CMakeLists.txt for 16KB page size"
+            tail -8 "$CMAKE_FILE"
           fi
+
+      - name: Decode and setup keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/camorent-upload-key.keystore
+          echo "Keystore decoded successfully"
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
 
       - name: Build Android App Bundle (AAB)
         working-directory: android
@@ -69,10 +71,34 @@ jobs:
             -PCAMORENT_UPLOAD_KEY_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
           echo "✅ Build completed with release signing!"
 
-      - name: Verify AAB signature
+      - name: Verify 16KB alignment in AAB
         run: |
-          echo "Checking AAB signature..."
-          unzip -l android/app/build/outputs/bundle/release/app-release.aab | grep -i "META-INF" || true
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          mkdir -p /tmp/aab_verify
+          unzip -q "$AAB" -d /tmp/aab_verify
+          echo "Checking .so alignment..."
+          BAD=0
+          for SO in $(find /tmp/aab_verify -name "*.so"); do
+            # Check ELF 64-bit PT_LOAD alignment using readelf
+            ARCH=$(file "$SO" | grep -o "64-bit")
+            if [ -n "$ARCH" ]; then
+              ALIGN=$(readelf -l "$SO" 2>/dev/null | awk '/LOAD/{print $NF}' | head -1)
+              NAME=$(echo "$SO" | rev | cut -d'/' -f1-2 | rev)
+              if [ "$ALIGN" = "0x1000" ]; then
+                echo "  BAD (4KB): $NAME"
+                BAD=$((BAD + 1))
+              elif [ "$ALIGN" = "0x4000" ]; then
+                echo "  OK  (16KB): $NAME"
+              fi
+            fi
+          done
+          echo ""
+          if [ "$BAD" -gt 0 ]; then
+            echo "❌ $BAD .so file(s) are NOT 16KB aligned - Play Store will reject this build"
+            exit 1
+          else
+            echo "✅ All 64-bit .so files are 16KB aligned - ready for Play Store"
+          fi
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
