@@ -41,16 +41,9 @@ jobs:
           if grep -q "max-page-size" "$CMAKE_FILE"; then
             echo "Already patched"
           else
-            # Append target_link_options at end of file so it applies after add_library
-            cat >> "$CMAKE_FILE" << 'CMAKE_EOF'
-
-# 16KB page size support (Android 15+ requirement)
-if(ANDROID)
-  target_link_options(${PACKAGE_NAME} PRIVATE "-Wl,-z,max-page-size=16384")
-endif()
-CMAKE_EOF
-            echo "✅ Patched expo-modules-core CMakeLists.txt for 16KB page size"
-            tail -8 "$CMAKE_FILE"
+            printf '\n# 16KB page size support (Android 15+)\nif(ANDROID)\n  target_link_options(${PACKAGE_NAME} PRIVATE "-Wl,-z,max-page-size=16384")\nendif()\n' >> "$CMAKE_FILE"
+            echo "Patched CMakeLists.txt:"
+            tail -6 "$CMAKE_FILE"
           fi
 
       - name: Decode and setup keystore
@@ -69,35 +62,32 @@ CMAKE_EOF
             -PCAMORENT_UPLOAD_KEY_ALIAS=camorent-upload \
             -PCAMORENT_UPLOAD_STORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}" \
             -PCAMORENT_UPLOAD_KEY_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
-          echo "✅ Build completed with release signing!"
+          echo "Build completed with release signing!"
 
       - name: Verify 16KB alignment in AAB
         run: |
           AAB="android/app/build/outputs/bundle/release/app-release.aab"
           mkdir -p /tmp/aab_verify
           unzip -q "$AAB" -d /tmp/aab_verify
-          echo "Checking .so alignment..."
+          echo "Checking 64-bit .so alignment..."
           BAD=0
           for SO in $(find /tmp/aab_verify -name "*.so"); do
-            # Check ELF 64-bit PT_LOAD alignment using readelf
-            ARCH=$(file "$SO" | grep -o "64-bit")
-            if [ -n "$ARCH" ]; then
+            if file "$SO" | grep -q "64-bit"; then
               ALIGN=$(readelf -l "$SO" 2>/dev/null | awk '/LOAD/{print $NF}' | head -1)
               NAME=$(echo "$SO" | rev | cut -d'/' -f1-2 | rev)
               if [ "$ALIGN" = "0x1000" ]; then
                 echo "  BAD (4KB): $NAME"
                 BAD=$((BAD + 1))
-              elif [ "$ALIGN" = "0x4000" ]; then
+              else
                 echo "  OK  (16KB): $NAME"
               fi
             fi
           done
-          echo ""
           if [ "$BAD" -gt 0 ]; then
-            echo "❌ $BAD .so file(s) are NOT 16KB aligned - Play Store will reject this build"
+            echo "FAIL: $BAD .so file(s) not 16KB aligned"
             exit 1
           else
-            echo "✅ All 64-bit .so files are 16KB aligned - ready for Play Store"
+            echo "PASS: All 64-bit .so files are 16KB aligned"
           fi
 
       - name: Upload AAB Artifact
@@ -109,9 +99,6 @@ CMAKE_EOF
 
       - name: Build summary
         run: |
-          echo "✅ Android AAB build completed successfully!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📦 **Artifact:** app-release.aab" >> $GITHUB_STEP_SUMMARY
-          echo "📍 **Location:** android/app/build/outputs/bundle/release/" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "⬇️ Download the AAB from the Artifacts section above." >> $GITHUB_STEP_SUMMARY
+          echo "Android AAB build completed successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "Artifact: app-release.aab" >> $GITHUB_STEP_SUMMARY
+          echo "Download the AAB from the Artifacts section above." >> $GITHUB_STEP_SUMMARY
