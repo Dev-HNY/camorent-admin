@@ -38,7 +38,7 @@
         "backgroundColor": "#0A0A0F"
       },
       "package": "com.camorent.adminapp",
-      "versionCode": 18,
+      "versionCode": 19,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
@@ -58,6 +58,7 @@
     },
     "plugins": [
       "expo-font",
+      "expo-splash-screen",
       "expo-secure-store",
       [
         "expo-notifications",

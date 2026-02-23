@@ -505,6 +505,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: responsive.spacing.lg,
     gap: responsive.spacing.lg,
+    paddingBottom: 100,
   },
   emptyState: {
     alignItems: 'center',
