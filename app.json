@@ -38,7 +38,7 @@
         "backgroundColor": "#0A0A0F"
       },
       "package": "com.camorent.adminapp",
-      "versionCode": 21,
+      "versionCode": 22,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
@@ -57,14 +57,8 @@
       "favicon": "./assets/icon-favicon.png"
     },
     "plugins": [
-      [
-        "expo-font",
-        {
-          "fonts": [
-            "./node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf"
-          ]
-        }
-      ],
+      "expo-font",
+      "./plugins/withIonicons.js",
       "expo-splash-screen",
       "expo-secure-store",
       [
