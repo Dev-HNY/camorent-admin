@@ -113,12 +113,29 @@ export default function ShootRequestCard({ request, onApprove, onReject }) {
       {/* Info Grid */}
       <View style={styles.infoGrid}>
         <View style={dynamicStyles.infoItem}>
-          <View style={dynamicStyles.infoIcon}>
-            <Ionicons name="location" size={16} color={BRAND_COLORS.primary} />
+          <View style={[dynamicStyles.infoIcon, request.deliveryType === 'self_pickup' && { backgroundColor: 'rgba(142, 15, 255, 0.12)' }]}>
+            <Ionicons
+              name={request.deliveryType === 'self_pickup' ? 'business' : 'location'}
+              size={16}
+              color={request.deliveryType === 'self_pickup' ? '#8E0FFF' : BRAND_COLORS.primary}
+            />
           </View>
           <View style={styles.infoContent}>
-            <Text style={dynamicStyles.infoLabel}>Location</Text>
-            <Text style={dynamicStyles.infoValue}>{request.location}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+              <Text style={dynamicStyles.infoLabel}>
+                {request.deliveryType === 'self_pickup' ? 'Self Pickup' : 'Delivery Address'}
+              </Text>
+              {request.deliveryType === 'self_pickup' && (
+                <View style={{ backgroundColor: '#F5EDFF', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 1 }}>
+                  <Text style={{ fontSize: 9, fontWeight: '700', color: '#8E0FFF', textTransform: 'uppercase', letterSpacing: 0.5 }}>PICKUP</Text>
+                </View>
+              )}
+            </View>
+            <Text style={dynamicStyles.infoValue}>
+              {request.deliveryType === 'self_pickup'
+                ? 'N-65, Gautam Nagar, New Delhi 110049'
+                : request.location}
+            </Text>
           </View>
         </View>
 
@@ -222,7 +239,7 @@ export default function ShootRequestCard({ request, onApprove, onReject }) {
           style={styles.actionButton}
         />
         <AnimatedButton
-          title="Approve"
+          title="Accept"
           onPress={handleApprove}
           variant="primary"
           size="large"
@@ -249,7 +266,7 @@ export default function ShootRequestCard({ request, onApprove, onReject }) {
             onPress: () => {},
           },
           {
-            text: 'Approve',
+            text: 'Accept',
             style: 'primary',
             onPress: confirmApprove,
           },

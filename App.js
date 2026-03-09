@@ -189,6 +189,7 @@ function AppContent() {
             rental_days: data.rental_days,
             rental_start_date: data.rental_start_date,
             rental_end_date: data.rental_end_date,
+            delivery_type: data.delivery_type || 'delivery',
             equipment: (data.equipment_details || []).map((item, idx) => ({
               equipment_name: item,
               quantity: 1,
@@ -217,6 +218,7 @@ function AppContent() {
             rental_days: data.rental_days,
             rental_start_date: data.rental_start_date,
             rental_end_date: data.rental_end_date,
+            delivery_type: data.delivery_type || 'delivery',
             equipment: (data.equipment_details || []).map((item, idx) => ({
               equipment_name: item,
               quantity: 1,
@@ -248,6 +250,9 @@ function AppContent() {
           shoot_name: data.shoot_name,
           total_amount: data.total_amount,
           rental_days: data.rental_days,
+          rental_start_date: data.rental_start_date,
+          rental_end_date: data.rental_end_date,
+          delivery_type: data.delivery_type || 'delivery',
           equipment: (data.equipment_details || []).map((item, idx) => ({
             equipment_name: item,
             quantity: 1,

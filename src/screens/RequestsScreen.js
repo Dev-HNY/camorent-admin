@@ -187,6 +187,7 @@ export default function RequestsScreen() {
           shootName: booking.shoot_name || 'Untitled Shoot',
           customerName: booking.user_name || booking.user?.name || 'Customer',
           location: booking.user_address || 'Address not provided',
+          deliveryType: booking.delivery_type || 'delivery',
           contactNumber: booking.user_phone || booking.user?.phone || null,
           duration: {
             days: booking.total_rental_days || 1,

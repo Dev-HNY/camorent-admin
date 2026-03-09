@@ -77,7 +77,7 @@ class NotificationService {
       await Notifications.setNotificationCategoryAsync('booking_request', [
         {
           identifier: 'approve',
-          buttonTitle: 'Approve',
+          buttonTitle: 'Accept',
           options: {
             opensAppToForeground: true,
           },

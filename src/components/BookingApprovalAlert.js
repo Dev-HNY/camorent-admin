@@ -135,7 +135,7 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Approve',
+          text: 'Accept',
           style: 'default',
           onPress: async () => {
             setIsApproving(true);
@@ -198,6 +198,9 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
     inputRange: [0, 1],
     outputRange: [-width, width],
   });
+
+  const deliveryType = fullBookingDetails?.delivery_type || bookingData?.delivery_type || 'delivery';
+  const isSelfPickup = deliveryType === 'self_pickup';
 
   const dynamicStyles = StyleSheet.create({
     overlay: {
@@ -284,7 +287,9 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
               </LinearGradient>
             </Animated.View>
 
-            <Text style={styles.headerTitle}>🎬 New Booking Request</Text>
+            <Text style={styles.headerTitle}>
+              {isSelfPickup ? '🏭 Self Pickup Request' : '🎬 New Booking Request'}
+            </Text>
             <Text style={styles.headerSubtitle}>Requires your attention</Text>
           </LinearGradient>
 
@@ -331,6 +336,35 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                 </View>
               </View>
 
+              {/* Delivery Type Row */}
+              <View style={[styles.infoCard, dynamicStyles.infoCard, {
+                borderColor: isSelfPickup ? 'rgba(142, 15, 255, 0.3)' : undefined,
+                backgroundColor: isSelfPickup
+                  ? (isDark ? 'rgba(142, 15, 255, 0.08)' : 'rgba(142, 15, 255, 0.04)')
+                  : undefined,
+              }]}>
+                <View style={styles.infoCardHeader}>
+                  <Ionicons
+                    name={isSelfPickup ? 'business' : 'location'}
+                    size={16}
+                    color={isSelfPickup ? '#8E0FFF' : BRAND_COLORS.primary}
+                  />
+                  <Text style={[styles.infoCardTitle, isSelfPickup && { color: '#8E0FFF' }]}>
+                    {isSelfPickup ? 'Self Pickup' : 'Delivery'}
+                  </Text>
+                  {isSelfPickup && (
+                    <View style={{ backgroundColor: '#8E0FFF', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2, marginLeft: 4 }}>
+                      <Text style={{ fontSize: 9, fontWeight: '800', color: '#FFF', textTransform: 'uppercase', letterSpacing: 0.5 }}>PICKUP</Text>
+                    </View>
+                  )}
+                </View>
+                <Text style={[styles.shootNameText, dynamicStyles.value, { fontSize: 13, fontWeight: '600' }]}>
+                  {isSelfPickup
+                    ? 'Camorent Warehouse — N-65, Gautam Nagar, New Delhi 110049'
+                    : (bookingData.delivery_address || 'Customer delivery address')}
+                </Text>
+              </View>
+
               {/* Amount Card - Highlighted */}
               <LinearGradient
                 colors={[
@@ -355,38 +389,36 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                 </View>
               </LinearGradient>
 
-              {/* Equipment Details - Show from bookingData or fullBookingDetails */}
-              {((bookingData?.equipment && bookingData.equipment.length > 0) ||
-                (fullBookingDetails?.equipment && fullBookingDetails.equipment.length > 0)) && (
+              {/* Equipment Details - from fullBookingDetails.sku_items */}
+              {fullBookingDetails?.sku_items && fullBookingDetails.sku_items.length > 0 && (
                 <View style={[styles.detailsSection, dynamicStyles.infoCard]}>
                   <View style={styles.sectionHeader}>
                     <Ionicons name="hardware-chip" size={18} color={BRAND_COLORS.primary} />
                     <Text style={styles.sectionTitle}>Equipment</Text>
                   </View>
-                  {(fullBookingDetails?.equipment || bookingData?.equipment || []).map((item, index) => (
+                  {fullBookingDetails.sku_items.map((item, index) => (
                     <View key={index} style={styles.listItem}>
                       <View style={styles.bulletPoint} />
                       <Text style={[styles.listItemText, dynamicStyles.value]}>
-                        {item.name || item.equipment_name || item.camera_name} {item.quantity && `(×${item.quantity})`}
+                        {item.name}{item.quantity > 1 ? ` (×${item.quantity})` : ''}
                       </Text>
                     </View>
                   ))}
                 </View>
               )}
 
-              {/* Crew Details - Show from bookingData or fullBookingDetails */}
-              {((bookingData?.crew && bookingData.crew.length > 0) ||
-                (fullBookingDetails?.crew && fullBookingDetails.crew.length > 0)) && (
+              {/* Crew Details - from fullBookingDetails.crew_items */}
+              {fullBookingDetails?.crew_items && fullBookingDetails.crew_items.length > 0 && (
                 <View style={[styles.detailsSection, dynamicStyles.infoCard]}>
                   <View style={styles.sectionHeader}>
                     <Ionicons name="people" size={18} color={BRAND_COLORS.primary} />
                     <Text style={styles.sectionTitle}>Crew Members</Text>
                   </View>
-                  {(fullBookingDetails?.crew || bookingData?.crew || []).map((member, index) => (
+                  {fullBookingDetails.crew_items.map((member, index) => (
                     <View key={index} style={styles.listItem}>
                       <View style={styles.bulletPoint} />
                       <Text style={[styles.listItemText, dynamicStyles.value]}>
-                        {member.name || member.crew_name} {member.role && `- ${member.role}`}
+                        {member.quantity > 1 ? `${member.quantity}× ` : ''}{member.crew_type_name}
                       </Text>
                     </View>
                   ))}
@@ -456,10 +488,10 @@ export default function BookingApprovalAlert({ visible, bookingData, onClose, on
                 ) : (
                   <>
                     <Ionicons name="checkmark-circle" size={22} color="#FFF" />
-                    <Text style={styles.buttonText}>Approve</Text>
+                    <Text style={styles.buttonText}>Accept</Text>
                   </>
                 )}
-              </LinearGradient>
+              </LinearGradient> 
             </TouchableOpacity>
           </View>
 
